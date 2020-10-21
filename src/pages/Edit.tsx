@@ -4,7 +4,7 @@ import MenuEdit from "../components/MenuEdit";
 import NoticeEdit from "../template/NoticeEdit";
 import BanquetEdit from "../components/BanquetEdit";
 import * as H from "history";
-import Header from "../Header";
+import Header from "../components/Header";
 
 type Props = {
   history: H.History;

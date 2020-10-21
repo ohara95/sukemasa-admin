@@ -5,7 +5,7 @@ import Management from "./pages/Management";
 import ResetPassword from "./pages/ResetPassword";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import { AuthProvider } from "./AuthProvider";
+import { AuthProvider } from "./AuthService";
 import LoggedInRoute from "./LoggedInRoute";
 
 const App = () => {

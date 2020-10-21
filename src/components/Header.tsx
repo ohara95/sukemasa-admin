@@ -1,5 +1,6 @@
-import React, { FC } from "react";
-import { auth } from "./config/firebese";
+import React, { FC, useContext } from "react";
+import { auth } from "../config/firebese";
+import { AuthContext } from "../AuthService";
 
 type Props = {
   onClick: any;
@@ -8,6 +9,7 @@ type Props = {
   logout?: boolean;
 };
 const Temporary: FC<Props> = ({ onClick, title, buttonText, logout }) => {
+  const { setLoading } = useContext(AuthContext);
   return (
     <nav id="header" className="w-full z-30 top-0 py-1 flex">
       <nav>
@@ -24,7 +26,10 @@ const Temporary: FC<Props> = ({ onClick, title, buttonText, logout }) => {
             <li>
               <button
                 className="fas fa-sign-out-alt text-red-500"
-                onClick={() => auth.signOut()}
+                onClick={() => {
+                  auth.signOut();
+                  // setLoading(true);
+                }}
               />
             </li>
           )}

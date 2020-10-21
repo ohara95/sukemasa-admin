@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
-import { AuthContext } from "./AuthProvider";
+import { AuthContext } from "./AuthService";
 
 const LoggedInRoute = ({ component: Component, ...other }) => {
   const { user } = useContext(AuthContext);
