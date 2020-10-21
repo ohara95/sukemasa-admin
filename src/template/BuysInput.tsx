@@ -51,7 +51,7 @@ const BuysInput: FC<Props> = ({
         onChange={(e) => setBuysDetail(e.target.value)}
       />
     </div>
-    <div>
+    <div className="flex justify-end">
       <Button text="計上" />
     </div>
   </>

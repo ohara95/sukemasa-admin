@@ -2,6 +2,7 @@ import React, { FC, useState, useEffect } from "react";
 import * as H from "history";
 import { Sales, Buys, ToggleTable } from "../types";
 import { auth, db } from "../config/firebese";
+import Header from "../Header";
 
 import BuysTodo from "../components/buysTodo";
 import ManagementGraph from "../components/ManagementGraph";
@@ -186,17 +187,14 @@ const Management: FC<Props> = ({ history }) => {
 
   return (
     <>
-      <button
-        className="bg-white w-auto flex justify-end items-center text-blue-500 p-2 hover:text-blue-400"
+      <Header
         onClick={() => {
           history.push("/edit");
         }}
-      >
-        ホームページ編集
-      </button>
-      <h1 className="flex items-center font-sans font-bold break-normal text-gray-700 px-2 text-xl mt-12 lg:mt-0 md:text-2xl">
-        管理画面
-      </h1>
+        title="管理画面"
+        buttonText="HP編集"
+        logout
+      />
       <div>
         <div
           onClick={(e) => {
@@ -339,12 +337,6 @@ const Management: FC<Props> = ({ history }) => {
           </div>
         </div>
       </div>
-      <button
-        className="flex-shrink-0 bg-red-500 hover:bg-red-700 border-red-500 hover:border-red-700 text-sm border-4 text-white py-1 px-2 rounded"
-        onClick={() => auth.signOut()}
-      >
-        ログアウト
-      </button>
     </>
   );
 };

@@ -291,7 +291,7 @@ const MenuEdit = () => {
               )}
 
               <div className="md:flex md:items-center">
-                <div className="md:w-1/3" />
+                <div className="md:w-1/3 " />
                 <ToggleButton select={method} func={onMenuSubmit} />
               </div>
             </>

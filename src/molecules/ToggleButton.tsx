@@ -6,7 +6,7 @@ type Props = {
 };
 
 const ToggleButton: FC<Props> = ({ select, func }) => (
-  <div className="md:w-2/3">
+  <div className="md:w-2/3 flex justify-end">
     {select === "delete" ? (
       <button
         className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded "

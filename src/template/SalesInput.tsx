@@ -41,7 +41,7 @@ const SalesInput: FC<Props> = ({
         }}
       />
     </div>
-    <div>
+    <div className="flex justify-end">
       <Button text="計上" />
     </div>
   </>
