@@ -195,6 +195,7 @@ const Management: FC<Props> = ({ history }) => {
         buttonText="HP編集"
         logout
       />
+
       <div>
         <div
           onClick={(e) => {
@@ -332,9 +333,7 @@ const Management: FC<Props> = ({ history }) => {
         </div>
         <div className="w-2/6">
           <Label text="買い物リスト" />
-          <div className="h-64 overflow-y-scroll">
-            <BuysTodo />
-          </div>
+          <BuysTodo />
         </div>
       </div>
     </>

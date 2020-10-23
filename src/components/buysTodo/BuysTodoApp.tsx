@@ -15,7 +15,9 @@ const BuysTodoApp = () => {
         content={content}
         setContent={setContent}
       />
-      <BuysTodoList todos={todos} setTodos={setTodos} />
+      <div className="h-64 overflow-y-scroll">
+        <BuysTodoList todos={todos} setTodos={setTodos} />
+      </div>
     </>
   );
 };

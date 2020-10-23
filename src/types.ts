@@ -1,6 +1,5 @@
 import firebase from "./config/firebese";
 
-//memo まとめた方がいいのか別の方がいいのか？
 export type DBDATA = {
   date: firebase.firestore.Timestamp;
   buysPrice?: number[];
