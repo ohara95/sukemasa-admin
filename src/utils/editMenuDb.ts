@@ -34,13 +34,9 @@ export const editMenuDb = (
         if (!item && !price) {
           return alert("入力してください");
         } else if (!price) {
-          res.ref.update({
-            item,
-          });
+          res.ref.update({ item });
         } else if (!item) {
-          res.ref.update({
-            price: parseInt(price),
-          });
+          res.ref.update({ price: parseInt(price) });
         }
       })
       .then(() => {
@@ -50,9 +46,7 @@ export const editMenuDb = (
   } else if (selectMethod === "delete") {
     Ref.doc(id)
       .get()
-      .then((res) => {
-        res.ref.delete();
-      })
+      .then((res) => res.ref.delete())
       .then(() => {
         clearItem("");
         clearPrice("");

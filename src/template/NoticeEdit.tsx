@@ -1,6 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
-import { db } from "../config/firebese";
+import firebase, { db } from "../config/firebese";
 import { Label, Select, Textarea } from "../atoms";
+import { useDocument } from "react-firebase-hooks/firestore";
 
 type selectedProps = "holiday" | "other" | "none";
 type Notice = {
@@ -14,6 +15,11 @@ const NoticeEdit: FC = () => {
   const [other, setOther] = useState("");
   const [selected, setSelected] = useState<selectedProps>("none");
   const [dbData, setDbData] = useState<Notice>();
+
+  const [values, loading, error] = useDocument(
+    db.collection("notice").doc("f3068OjZY4BqCj3QiLjO"),
+    {}
+  );
 
   const noticeRef = db.collection("notice").doc("f3068OjZY4BqCj3QiLjO");
   useEffect(() => {
@@ -33,14 +39,13 @@ const NoticeEdit: FC = () => {
         key = "other";
         value = other;
       default:
+        break;
     }
     if (!value) {
       return alert("入力してください");
     } else {
       noticeRef
-        .update({
-          [key]: value,
-        })
+        .update({ [key]: value })
         .then()
         .catch((err) => {
           console.log(err);
@@ -55,6 +60,7 @@ const NoticeEdit: FC = () => {
       case "other":
         return other;
       default:
+        break;
     }
   };
 
@@ -65,6 +71,7 @@ const NoticeEdit: FC = () => {
       case "other":
         return setOther(value);
       default:
+        break;
     }
   };
 

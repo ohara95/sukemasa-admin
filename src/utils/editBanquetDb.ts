@@ -35,23 +35,11 @@ export const editBanquetDb = (
         if (!title && !price && !detail) {
           return alert("入力してください");
         } else if (title) {
-          res.ref
-            .update({
-              title,
-            })
-            .then(() => clearTitle(""));
+          res.ref.update({ title }).then(() => clearTitle(""));
         } else if (price) {
-          res.ref
-            .update({
-              price: parseInt(price),
-            })
-            .then(() => clearPrice(""));
+          res.ref.update({ price: parseInt(price) }).then(() => clearPrice(""));
         } else if (detail) {
-          res.ref
-            .update({
-              detail,
-            })
-            .then(() => clearDetail(""));
+          res.ref.update({ detail }).then(() => clearDetail(""));
         }
       });
   } else if (select === "delete") {

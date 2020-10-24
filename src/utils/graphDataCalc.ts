@@ -36,9 +36,7 @@ export const allMonthData = (dbData: (Sales | Buys)[]) => {
       }
       continue;
     }
-    arr.push({
-      ...key,
-    });
+    arr.push({ ...key });
   }
   const newArr = arr.map((data) => {
     return {
