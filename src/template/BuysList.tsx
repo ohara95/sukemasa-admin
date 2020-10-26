@@ -1,8 +1,9 @@
-import React, { FC } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { db } from "../config/firebese";
 import { format } from "date-fns";
 import { changeDisplayList } from "../utils";
 import { Buys, ToggleTable } from "../types";
+import { Input, Button } from "../atoms";
 
 type Props = {
   dbBuys: Buys[];
@@ -36,6 +37,17 @@ const BuysList: FC<Props> = ({
     .collection("management")
     .doc("NcmaRejmRabdytHQfbKU")
     .collection("buys");
+
+  // const [search, setSearch] = useState("");
+  // const [searchResult, setSearchResult] = useState([]);
+
+  // const searchBuys = () => {
+  //   setSearch("");
+  //   console.log(searchResult);
+  // };
+
+  // const filterData = dbBuys.filter((db) => db.detail === search);
+  // console.log(filterData);
 
   /** 経費項目編集 */
   const upDateBuys = (e: React.FormEvent<HTMLFormElement>, id: string) => {
@@ -72,11 +84,10 @@ const BuysList: FC<Props> = ({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     setBuysEdit(!buysEdit);
-    return dbBuys.map((db) => {
-      if ((e.target as HTMLInputElement).id === db.id) {
-        setBuysEditId(db.id);
-      }
-    });
+    const findData = dbBuys.find(
+      (db) => db.id === (e.target as HTMLInputElement).id
+    );
+    if (findData) setBuysEditId(findData?.id);
   };
 
   /** 経費削除 */
@@ -89,6 +100,14 @@ const BuysList: FC<Props> = ({
 
   return (
     <>
+      {/* <Input
+        type="text"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+        }}
+      />
+      <Button text="検索" onClick={searchBuys} /> */}
       {changeDisplayList(toggleTable, dbBuys, choiceMonth).map((db: any) => {
         return (
           <div key={db.id}>

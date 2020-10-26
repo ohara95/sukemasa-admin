@@ -6,6 +6,9 @@ import { Todo } from "./type";
 const BuysTodoApp = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [content, setContent] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
+  const [editId, setEditId] = useState("");
+  const [editContent, setEditContent] = useState("");
 
   return (
     <>
@@ -16,7 +19,18 @@ const BuysTodoApp = () => {
         setContent={setContent}
       />
       <div className="h-64 overflow-y-scroll">
-        <BuysTodoList todos={todos} setTodos={setTodos} />
+        <BuysTodoList
+          todos={todos}
+          setTodos={setTodos}
+          isEdit={isEdit}
+          setIsEdit={setIsEdit}
+          content={content}
+          setContent={setContent}
+          editId={editId}
+          setEditId={setEditId}
+          editContent={editContent}
+          setEditContent={setEditContent}
+        />
       </div>
     </>
   );

@@ -90,7 +90,7 @@ const BuysTodoForm: FC<Props> = ({ todos, setTodos, content, setContent }) => {
             setContent(e.target.value);
           }}
           type="text"
-          plusStyle="w-9/12"
+          plusStyle="w-9/12 "
         />
         <div className="w-4/12 flex justify-around">
           <button
