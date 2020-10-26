@@ -31,7 +31,6 @@ const Management: FC<Props> = ({ history }) => {
   const [buysPrice, setBuysPrice] = useState("");
   const [buysDetail, setBuysDetail] = useState("");
 
-  //親が持つべきなのか？
   const [salesEdit, setSalesEdit] = useState(false);
   const [salesEditId, setSalesEditId] = useState("");
   const [buysEdit, setBuysEdit] = useState(false);
@@ -59,6 +58,8 @@ const Management: FC<Props> = ({ history }) => {
   });
 
   const managementRef = db.collection("management").doc("NcmaRejmRabdytHQfbKU");
+  const salesRef = managementRef.collection("sales");
+  const buysRef = managementRef.collection("buys");
 
   /** 売上計上 */
   const plusSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -91,10 +92,8 @@ const Management: FC<Props> = ({ history }) => {
 
   /** 売上をDBに登録 */
   const salesDB = (date: string, price: string) => {
-    managementRef
-      .collection("sales")
-      .doc()
-      .set({
+    salesRef
+      .add({
         date: new Date(date),
         salesPrice: parseInt(price),
       })
@@ -106,10 +105,8 @@ const Management: FC<Props> = ({ history }) => {
 
   /** 経費をDBに登録 */
   const buysDB = (date: string, price: string, detail: string) => {
-    managementRef
-      .collection("buys")
-      .doc()
-      .set({
+    buysRef
+      .add({
         date: new Date(date),
         buysPrice: parseInt(price),
         detail,
@@ -122,32 +119,26 @@ const Management: FC<Props> = ({ history }) => {
 
   useEffect(() => {
     /** salesData取得 */
-    managementRef
-      .collection("sales")
-      .orderBy("date")
-      .onSnapshot((snap) => {
-        const data = snap.docs.map((doc) => {
-          return {
-            ...doc.data(),
-            id: doc.id,
-          };
-        });
-        setDbSales(data as Sales[]);
+    salesRef.orderBy("date").onSnapshot((snap) => {
+      const data = snap.docs.map((doc) => {
+        return {
+          ...doc.data(),
+          id: doc.id,
+        };
       });
+      setDbSales(data as Sales[]);
+    });
 
     /** buysData取得 */
-    managementRef
-      .collection("buys")
-      .orderBy("date")
-      .onSnapshot((snap) => {
-        const data = snap.docs.map((doc) => {
-          return {
-            ...doc.data(),
-            id: doc.id,
-          };
-        });
-        setDbBuys(data as Buys[]);
+    buysRef.orderBy("date").onSnapshot((snap) => {
+      const data = snap.docs.map((doc) => {
+        return {
+          ...doc.data(),
+          id: doc.id,
+        };
       });
+      setDbBuys(data as Buys[]);
+    });
   }, []);
 
   /** 差額表示 */
@@ -242,7 +233,7 @@ const Management: FC<Props> = ({ history }) => {
           </button>
           {/* </div> */}
         </div>
-        <ManagementGraph chooseGraph={chooseGraph} />
+        <ManagementGraph chooseGraph={chooseGraph()} />
       </div>
 
       <div className="flex w-11/12 mt-20 mx-auto bg-white rounded justify-between">

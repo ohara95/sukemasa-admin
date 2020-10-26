@@ -4,7 +4,7 @@ import { toMonth } from "./month";
 import { sumPrice } from "./arrCalc";
 import { Sales, Buys } from "../types";
 
-//今月
+/** 今月のグラフデータ */
 export const graphData = (dbData: (Sales | Buys)[]) => {
   return sumData(dbData)
     .filter((data) => parseInt(format(data.date.toDate(), "MM")) === toMonth)
@@ -17,7 +17,7 @@ export const graphData = (dbData: (Sales | Buys)[]) => {
     });
 };
 
-//年間
+/** 年間のグラフデータ */
 export const allMonthData = (dbData: (Sales | Buys)[]) => {
   let arr = [];
   const totalData = sumData(dbData);
@@ -48,7 +48,7 @@ export const allMonthData = (dbData: (Sales | Buys)[]) => {
   return newArr;
 };
 
-//選択
+/** 月指定のグラフデータ */
 export const chooseGraphData = (
   dbData: (Sales | Buys)[],
   chooseBtn: string

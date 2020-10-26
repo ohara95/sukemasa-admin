@@ -24,7 +24,7 @@ const ManagementGraph: FC<any> = ({ chooseGraph }) => (
   <ComposedChart //グラフ全体のサイズや位置、データを指定。場合によってmarginで上下左右の位置を指定する必要あり。
     width={1000} //グラフ全体の幅を指定
     height={350} //グラフ全体の高さを指定
-    data={chooseGraph()} //ここにArray型のデータを指定
+    data={chooseGraph} //ここにArray型のデータを指定
     style={{ margin: "0 auto" }}
   >
     <XAxis
@@ -54,4 +54,4 @@ const ManagementGraph: FC<any> = ({ chooseGraph }) => (
   </ComposedChart>
 );
 
-export default ManagementGraph;
+export default React.memo(ManagementGraph);

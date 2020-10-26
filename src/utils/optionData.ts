@@ -40,3 +40,9 @@ export const recommendCategory = [
   { value: "cuisine", name: "料理" },
   { value: "drink", name: "ドリンク" },
 ];
+
+export const noticeCategory = [
+  { value: "none", name: "選択して下さい" },
+  { value: "holiday", name: "休日" },
+  { value: "other", name: "その他" },
+];

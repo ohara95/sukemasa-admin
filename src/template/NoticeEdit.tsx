@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import firebase, { db } from "../config/firebese";
 import { Label, Select, Textarea } from "../atoms";
-import { useDocument } from "react-firebase-hooks/firestore";
+import { noticeCategory } from "../utils/optionData";
 
 type selectedProps = "holiday" | "other" | "none";
 type Notice = {
@@ -16,51 +16,23 @@ const NoticeEdit: FC = () => {
   const [selected, setSelected] = useState<selectedProps>("none");
   const [dbData, setDbData] = useState<Notice>();
 
-  const [values, loading, error] = useDocument(
-    db.collection("notice").doc("f3068OjZY4BqCj3QiLjO"),
-    {}
-  );
-
   const noticeRef = db.collection("notice").doc("f3068OjZY4BqCj3QiLjO");
   useEffect(() => {
     noticeRef.onSnapshot((snap) => setDbData(snap.data() as Notice));
   }, []);
 
-  const addDBNotice = () => {
-    let key = "";
-    let value = "";
+  const noticeObj = { none: "", holiday, other };
 
-    switch (selected) {
-      case "holiday":
-        key = "holiday";
-        value = holiday;
-        break;
-      case "other":
-        key = "other";
-        value = other;
-      default:
-        break;
-    }
-    if (!value) {
+  const addDBNotice = () => {
+    if (!noticeObj[selected]) {
       return alert("入力してください");
     } else {
       noticeRef
-        .update({ [key]: value })
+        .update({ [selected]: noticeObj[selected] })
         .then()
         .catch((err) => {
           console.log(err);
         });
-    }
-  };
-
-  const chooseItem = () => {
-    switch (selected) {
-      case "holiday":
-        return holiday;
-      case "other":
-        return other;
-      default:
-        break;
     }
   };
 
@@ -81,24 +53,11 @@ const NoticeEdit: FC = () => {
     e.preventDefault();
     if (selected === "none") {
       return alert("選択して下さい");
+    } else {
+      setHoliday("");
+      setOther("");
+      addDBNotice();
     }
-    switch (selected) {
-      case "holiday":
-        setHoliday("");
-        break;
-      case "other":
-        setOther("");
-        break;
-      default:
-        break;
-    }
-    addDBNotice();
-  };
-
-  const displayPlaceholder = () => {
-    if (dbData) {
-      return dbData[selected];
-    } else return;
   };
 
   return (
@@ -121,9 +80,11 @@ const NoticeEdit: FC = () => {
                   setSelected(e.target.value as selectedProps);
                 }}
               >
-                <option value="none">選択して下さい</option>
-                <option value="holiday">休日</option>
-                <option value="other">その他</option>
+                {noticeCategory.map((category) => (
+                  <option key={category.value} value={category.value}>
+                    {category.name}
+                  </option>
+                ))}
               </Select>
             </div>
           </div>
@@ -137,8 +98,8 @@ const NoticeEdit: FC = () => {
                 onChange={(e) => {
                   selectChange(e.target.value);
                 }}
-                value={chooseItem() as string}
-                placeholder={displayPlaceholder()}
+                value={noticeObj[selected]}
+                placeholder={dbData?.[selected]}
               />
             </div>
           </div>

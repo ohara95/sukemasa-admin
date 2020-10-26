@@ -84,9 +84,7 @@ const BuysList: FC<Props> = ({
     buysRef
       .doc(id)
       .get()
-      .then((res) => {
-        res.ref.delete();
-      });
+      .then((res) => res.ref.delete());
   };
 
   return (
@@ -111,11 +109,7 @@ const BuysList: FC<Props> = ({
                 &nbsp;
               </p>
               {buysEdit && buysEditId === db.id ? (
-                <form
-                  onSubmit={(e) => {
-                    upDateBuys(e, db.id);
-                  }}
-                >
+                <form onSubmit={(e) => upDateBuys(e, db.id)}>
                   <div className="flex">
                     <input
                       type="number"

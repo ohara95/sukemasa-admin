@@ -41,11 +41,7 @@ const ResetPassword = () => {
         </section>
 
         <section className="mt-10">
-          <form
-            onSubmit={handleSubmit(onFromSubmit)}
-            className="flex flex-col"
-            action="#"
-          >
+          <form onSubmit={handleSubmit(onFromSubmit)} className="flex flex-col">
             <div className="mb-6 pt-3 rounded bg-white">
               <label className="block text-gray-700 text-base font-bold mb-2 ml-3">
                 メールアドレス

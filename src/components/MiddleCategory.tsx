@@ -12,13 +12,11 @@ const MiddleCategory: FC<Props> = ({ setState, optionData }) => (
       setState(e.target.value);
     }}
   >
-    {optionData.map((category) => {
-      return (
-        <option key={category.value} value={category.value}>
-          {category.name}
-        </option>
-      );
-    })}
+    {optionData.map((category) => (
+      <option key={category.value} value={category.value}>
+        {category.name}
+      </option>
+    ))}
   </Select>
 );
 

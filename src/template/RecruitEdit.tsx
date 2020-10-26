@@ -29,58 +29,19 @@ const RecruitEdit = () => {
     recruitRef.onSnapshot((snap) => setDbData(snap.data() as Recruit));
   }, []);
 
-  const addDBRecruit = (selectItem: Select) => {
-    let key = "";
-    let value = "";
+  const recruitObj = { none: "", work, wont, terms, time, welfare };
 
-    switch (selectItem) {
-      case "work":
-        key = "work";
-        value = work;
-        break;
-      case "wont":
-        key = "wont";
-        value = wont;
-      case "terms":
-        key = "terms";
-        value = terms;
-      case "time":
-        key = "time";
-        value = time;
-      case "welfare":
-        key = "welfare";
-        value = welfare;
-      default:
-    }
-
-    if (!value) {
+  const addDBRecruit = () => {
+    if (!recruitObj[selected]) {
       return alert("入力してください");
     } else {
       db.collection("recruit")
         .doc("eTLykSLZuPvi6iJ48vNB")
-        .update({
-          [key]: value,
-        })
+        .update({ [selected]: recruitObj[selected] })
         .then()
         .catch((err) => {
           console.log(err);
         });
-    }
-  };
-
-  const chooseItem = () => {
-    switch (selected) {
-      case "work":
-        return work;
-      case "wont":
-        return wont;
-      case "terms":
-        return terms;
-      case "time":
-        return time;
-      case "welfare":
-        return welfare;
-      default:
     }
   };
 
@@ -97,6 +58,7 @@ const RecruitEdit = () => {
       case "welfare":
         return setWelfare(value);
       default:
+        break;
     }
   };
 
@@ -107,19 +69,13 @@ const RecruitEdit = () => {
     if (selected === "none") {
       return alert("選択してください");
     } else {
-      addDBRecruit(selected);
+      addDBRecruit();
       setWork("");
       setWont("");
       setTerms("");
       setTime("");
       setWelfare("");
     }
-  };
-
-  const displayPlaceholder = () => {
-    if (dbData) {
-      return dbData[selected];
-    } else return;
   };
 
   return (
@@ -142,13 +98,11 @@ const RecruitEdit = () => {
                   setSelected(e.target.value as Select);
                 }}
               >
-                {recruitCategory.map((category) => {
-                  return (
-                    <option key={category.value} value={category.value}>
-                      {category.name}
-                    </option>
-                  );
-                })}
+                {recruitCategory.map((category) => (
+                  <option key={category.value} value={category.value}>
+                    {category.name}
+                  </option>
+                ))}
               </Select>
             </div>
           </div>
@@ -159,11 +113,11 @@ const RecruitEdit = () => {
             </div>
             <div className="md:w-2/3">
               <Textarea
-                value={chooseItem() as string}
+                value={recruitObj[selected]}
                 onChange={(e) => {
                   selectChange(e.target.value as Select);
                 }}
-                placeholder={displayPlaceholder()}
+                placeholder={dbData?.[selected]}
               />
             </div>
           </div>

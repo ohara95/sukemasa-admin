@@ -20,6 +20,7 @@ type SalesDetail = {
 };
 
 type MethodProps = "add" | "edit" | "delete" | "none" | "";
+type Category = "none" | "cuisine" | "drink" | "recommend";
 
 const MenuEdit = () => {
   const [cuisine, setCuisine] = useState("");
@@ -32,10 +33,11 @@ const MenuEdit = () => {
   const [selectCuisine, setSelectCuisine] = useState("none");
   const [selectDrink, setSelectDrink] = useState("none");
   const [selectRecommend, setSelectRecommend] = useState("none");
-  const [selectCategory, setSelectCategory] = useState("none");
+  const [selectCategory, setSelectCategory] = useState<Category>("none");
   const [selectId, setSelectId] = useState("");
 
   const menuRef = db.collection("menu").doc("ya3NEbDICuOTwfUWcHQs");
+  const methodObj = { none: "", cuisine, drink, recommend };
 
   /** DBからデータ取得*/
   useEffect(() => {
@@ -51,9 +53,7 @@ const MenuEdit = () => {
   }, [selectCategory]);
 
   useEffect(() => {
-    if (method === "add") {
-      setSelectId("");
-    }
+    if (method === "add") setSelectId("");
   }, [method]);
 
   /** 値セット&DBに追加関数発火 */
@@ -129,19 +129,6 @@ const MenuEdit = () => {
     }
   };
 
-  /** 大分類のstateを選択 */
-  const toggleChange = () => {
-    switch (selectCategory) {
-      case "cuisine":
-        return cuisine;
-      case "drink":
-        return drink;
-      case "recommend":
-        return recommend;
-      default:
-    }
-  };
-
   // 大分類に応じて中分類セレクトを出す
   const selected = () => {
     if (selectCategory === "cuisine") {
@@ -185,13 +172,11 @@ const MenuEdit = () => {
 
     if (dbData) {
       const category = dbData.filter((el) => el.category === item);
-      return category.map((el) => {
-        return (
-          <option key={el.id} value={el.id}>
-            {el.item} ¥{el.price}
-          </option>
-        );
-      });
+      return category.map((el) => (
+        <option key={el.id} value={el.id}>
+          {el.item} ¥{el.price}
+        </option>
+      ));
     }
   };
 
@@ -214,16 +199,14 @@ const MenuEdit = () => {
                 <div className="md:w-2/3 border-gray-400 border-2 rounded">
                   <Select
                     onChange={(e) => {
-                      setSelectCategory(e.target.value);
+                      setSelectCategory(e.target.value as Category);
                     }}
                   >
-                    {category.map((category) => {
-                      return (
-                        <option key={category.value} value={category.value}>
-                          {category.name}
-                        </option>
-                      );
-                    })}
+                    {category.map((category) => (
+                      <option key={category.value} value={category.value}>
+                        {category.name}
+                      </option>
+                    ))}
                   </Select>
                 </div>
               </div>
@@ -265,7 +248,7 @@ const MenuEdit = () => {
                     <div className="md:w-2/3">
                       <input
                         className="w-full border-gray-400 border-2 rounded py-3 px-3"
-                        value={toggleChange()}
+                        value={methodObj[selectCategory]}
                         onChange={(e) => {
                           controlChange(e.target.value);
                         }}
