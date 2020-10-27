@@ -1,34 +1,21 @@
-import React, { FC, Dispatch, SetStateAction } from "react";
-import { Todo } from "./type";
+import React, { FC } from "react";
 import { db } from "../../config/firebese";
+import { todoData, todoEdit, todoEditId, todoIsEdit } from "../../recoil_atoms";
+import { useRecoilValue, useRecoilState } from "recoil";
 
 type Props = {
   content: string;
   id: string;
   isDone: boolean;
-  todos: Todo[];
-  // 型推論させてないから型指定
-  setTodos: Dispatch<SetStateAction<Todo[]>>;
-  isEdit: boolean;
-  setIsEdit: (param: boolean) => void;
-  editContent: string;
-  setEditContent: (param: string) => void;
-  editId: string;
-  setEditId: (param: string) => void;
+  // // 型推論させてないから型指定
+  // setTodos: Dispatch<SetStateAction<Todo[]>>;
 };
 
-const BuysTodoItem: FC<Props> = ({
-  content,
-  id,
-  isDone,
-  todos,
-  isEdit,
-  setIsEdit,
-  editContent,
-  setEditContent,
-  editId,
-  setEditId,
-}) => {
+const BuysTodoItem: FC<Props> = ({ content, id, isDone }) => {
+  const todos = useRecoilValue(todoData);
+  const [isEdit, setIsEdit] = useRecoilState(todoIsEdit);
+  const [editId, setEditId] = useRecoilState(todoEditId);
+  const [editContent, setEditContent] = useRecoilState(todoEdit);
   const checkedItem = (itemId: string) => {
     const findData = todos.find((todo) => todo.id === itemId);
     if (findData)

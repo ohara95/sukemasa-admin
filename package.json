@@ -12,6 +12,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^5.1.6",
     "@types/recharts": "^1.8.16",
+    "@types/recoil": "0.0.1",
     "date-fns": "^2.16.1",
     "firebase": "^7.24.0",
     "react": "^16.14.0",
@@ -21,6 +22,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "recharts": "^1.8.5",
+    "recoil": "0.0.13",
     "typescript": "~3.7.2"
   },
   "scripts": {

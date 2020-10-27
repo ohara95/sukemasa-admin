@@ -2,16 +2,17 @@ import React, { useEffect, FC } from "react";
 import firebase, { db } from "../../config/firebese";
 import CustomInput from "../../atoms/Input";
 import { Todo } from "./type";
+import { useRecoilState } from "recoil";
+import { todoData } from "../../recoil_atoms";
 
 type Props = {
-  todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   content: string;
   setContent: (param: string) => void;
 };
 
-const BuysTodoForm: FC<Props> = ({ todos, setTodos, content, setContent }) => {
+const BuysTodoForm: FC<Props> = ({ content, setContent }) => {
   const todoRef = db.collection("todos");
+  const [todos, setTodos] = useRecoilState(todoData);
 
   const addTodo = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();

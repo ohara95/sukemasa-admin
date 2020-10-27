@@ -22,3 +22,9 @@ export type Buys = {
 };
 
 export type ToggleTable = "chooseMonth" | "months" | "year" | "";
+
+export type Todo = {
+  content: string;
+  id: string;
+  isDone: boolean;
+};
