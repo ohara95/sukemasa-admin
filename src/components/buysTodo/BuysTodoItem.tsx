@@ -43,7 +43,7 @@ const BuysTodoItem: FC<Props> = ({
     }
   };
 
-  const checkEdit = () => {
+  const upDateEdit = () => {
     db.collection("todos")
       .doc(editId)
       .update({ content: editContent ? editContent : content })
@@ -64,7 +64,7 @@ const BuysTodoItem: FC<Props> = ({
       />
       {isEdit && editId === id ? (
         <button
-          onClick={checkEdit}
+          onClick={upDateEdit}
           className="text-teal-500 fas fa-check focus:outline-none ml-2"
         />
       ) : (

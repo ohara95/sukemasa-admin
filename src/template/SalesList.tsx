@@ -6,53 +6,50 @@ import { Sales, ToggleTable } from "../types";
 
 type Props = {
   dbSales: Sales[];
-  salesEdit: boolean;
-  setSalesEdit: (param: boolean) => void;
+  isSalesEdit: boolean;
+  setIsSalesEdit: (param: boolean) => void;
   salesEditId: string;
   setSalesEditId: (param: string) => void;
-  salesPrice: string;
-  setSalesPrice: (param: string) => void;
   toggleTable: ToggleTable;
   choiceMonth: string;
+  editSales: string;
+  setEditSales: (param: string) => void;
 };
 
 /** 売上一覧 */
 const SalesList: FC<Props> = ({
   dbSales,
-  salesEdit,
-  setSalesEdit,
+  isSalesEdit,
+  setIsSalesEdit,
   salesEditId,
   setSalesEditId,
-  salesPrice,
-  setSalesPrice,
   toggleTable,
   choiceMonth,
+  editSales,
+  setEditSales,
 }) => {
   const salesRef = db
     .collection("management")
     .doc("NcmaRejmRabdytHQfbKU")
     .collection("sales");
 
-  /** 売上項目編集 */
-  const upDateSales = (e: React.FormEvent<HTMLFormElement>, id: string) => {
-    e.preventDefault();
-    setSalesPrice("");
-    setSalesEdit(false);
-    if (salesPrice) {
+  const upDateSales = (id: string) => {
+    setIsSalesEdit(!isSalesEdit);
+    if (editSales) {
       salesRef
         .doc(id)
-        .get()
-        .then((res) => {
-          res.ref.update({
-            salesPrice: parseInt(salesPrice),
-          });
+        .update({
+          salesPrice: parseInt(editSales),
+        })
+        .then(() => {
+          setEditSales("");
         });
     }
   };
 
   /** 押した編集ボタンのID取得(売上) */
   const inputPossible = (id: string) => {
-    setSalesEdit(!salesEdit);
+    setIsSalesEdit(!isSalesEdit);
     return dbSales.map((db) => {
       if (id === db.id) setSalesEditId(db.id);
     });
@@ -62,10 +59,7 @@ const SalesList: FC<Props> = ({
   const deleteSales = (id: string) => {
     salesRef
       .doc(id)
-      .get()
-      .then((res) => {
-        res.ref.delete();
-      })
+      .delete()
       .catch((e) => console.log(e));
   };
 
@@ -75,13 +69,24 @@ const SalesList: FC<Props> = ({
         return (
           <div key={db.id}>
             <div className="flex mt-2">
-              <button
-                id={db.id}
-                onClick={(e) => {
-                  inputPossible((e.target as HTMLInputElement).id);
-                }}
-                className="text-teal-500 far fa-edit focus:outline-none"
-              />
+              {isSalesEdit && salesEditId === db.id ? (
+                <button
+                  id={db.id}
+                  onClick={(e) => {
+                    upDateSales((e.target as HTMLInputElement).id);
+                  }}
+                  className="text-teal-500 fas fa-check focus:outline-none"
+                />
+              ) : (
+                <button
+                  id={db.id}
+                  onClick={(e) => {
+                    inputPossible((e.target as HTMLInputElement).id);
+                  }}
+                  className="text-teal-500 far fa-edit focus:outline-none"
+                />
+              )}
+
               <button
                 onClick={() => {
                   deleteSales(db.id);
@@ -92,25 +97,15 @@ const SalesList: FC<Props> = ({
                 {format(db.date.toDate(), "MM/dd")}
                 &nbsp;
               </p>
-              {salesEdit && salesEditId === db.id ? (
-                <form
-                  onSubmit={(e) => {
-                    upDateSales(e, db.id);
+              {isSalesEdit && salesEditId === db.id ? (
+                <input
+                  type="number"
+                  value={editSales}
+                  onChange={(e) => {
+                    setEditSales(e.target.value);
                   }}
-                >
-                  <input
-                    type="number"
-                    value={salesPrice}
-                    onChange={(e) => {
-                      setSalesPrice(e.target.value);
-                    }}
-                    placeholder={db.salesPrice}
-                  />
-                  <button
-                    type="submit"
-                    className="fas fa-check focus:outline-none"
-                  />
-                </form>
+                  placeholder={db.salesPrice}
+                />
               ) : (
                 <p className="text-l">{db.salesPrice.toLocaleString()}円</p>
               )}

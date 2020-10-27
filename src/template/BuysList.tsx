@@ -7,8 +7,8 @@ import { Input, Button } from "../atoms";
 
 type Props = {
   dbBuys: Buys[];
-  buysEdit: boolean;
-  setBuysEdit: (param: boolean) => void;
+  isBuysEdit: boolean;
+  setIsBuysEdit: (param: boolean) => void;
   buysEditId: string;
   setBuysEditId: (param: string) => void;
   buysDetail: string;
@@ -22,12 +22,12 @@ type Props = {
 /** 経費一覧 */
 const BuysList: FC<Props> = ({
   dbBuys,
-  buysEdit,
+  isBuysEdit,
   setBuysEditId,
   setBuysDetail,
   setBuysPrice,
   buysDetail,
-  setBuysEdit,
+  setIsBuysEdit,
   buysPrice,
   buysEditId,
   toggleTable,
@@ -50,32 +50,21 @@ const BuysList: FC<Props> = ({
   // console.log(filterData);
 
   /** 経費項目編集 */
-  const upDateBuys = (e: React.FormEvent<HTMLFormElement>, id: string) => {
-    e.preventDefault();
+  const upDateBuys = (id: string) => {
     setBuysPrice("");
     setBuysDetail("");
-    setBuysEdit(false);
+    setIsBuysEdit(!isBuysEdit);
 
     if (buysPrice) {
-      buysRef
-        .doc(id)
-        .get()
-        .then((res) => {
-          res.ref.update({
-            buysPrice: parseInt(buysPrice),
-          });
-        });
+      buysRef.doc(id).update({
+        buysPrice: parseInt(buysPrice),
+      });
     }
 
     if (buysDetail) {
-      buysRef
-        .doc(id)
-        .get()
-        .then((res) => {
-          res.ref.update({
-            detail: buysDetail,
-          });
-        });
+      buysRef.doc(id).update({
+        detail: buysDetail,
+      });
     }
   };
 
@@ -83,7 +72,7 @@ const BuysList: FC<Props> = ({
   const inputPossibleBuys = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    setBuysEdit(!buysEdit);
+    setIsBuysEdit(!isBuysEdit);
     const findData = dbBuys.find(
       (db) => db.id === (e.target as HTMLInputElement).id
     );
@@ -112,11 +101,18 @@ const BuysList: FC<Props> = ({
         return (
           <div key={db.id}>
             <div className="flex mt-2">
-              <button
-                id={db.id}
-                onClick={inputPossibleBuys}
-                className="text-teal-500 far fa-edit focus:outline-none"
-              />
+              {isBuysEdit && buysEditId === db.id ? (
+                <button
+                  onClick={() => upDateBuys(db.id)}
+                  className="text-teal-500 fas fa-check focus:outline-none"
+                />
+              ) : (
+                <button
+                  id={db.id}
+                  onClick={inputPossibleBuys}
+                  className="text-teal-500 far fa-edit focus:outline-none"
+                />
+              )}
               <button
                 onClick={() => {
                   deleteBuys(db.id);
@@ -127,33 +123,27 @@ const BuysList: FC<Props> = ({
                 {format(db.date.toDate(), "MM/dd")}
                 &nbsp;
               </p>
-              {buysEdit && buysEditId === db.id ? (
-                <form onSubmit={(e) => upDateBuys(e, db.id)}>
-                  <div className="flex">
-                    <input
-                      type="number"
-                      value={buysPrice}
-                      onChange={(e) => {
-                        setBuysPrice(e.target.value);
-                      }}
-                      placeholder={db.buysPrice}
-                      className="w-24"
-                    />
-                    <input
-                      type="text"
-                      value={buysDetail}
-                      onChange={(e) => {
-                        setBuysDetail(e.target.value);
-                      }}
-                      placeholder={db.detail}
-                      className="w-24"
-                    />
-                    <button
-                      type="submit"
-                      className="fas fa-check focus:outline-none"
-                    />
-                  </div>
-                </form>
+              {isBuysEdit && buysEditId === db.id ? (
+                <div className="flex">
+                  <input
+                    type="number"
+                    value={buysPrice}
+                    onChange={(e) => {
+                      setBuysPrice(e.target.value);
+                    }}
+                    placeholder={db.buysPrice}
+                    className="w-24"
+                  />
+                  <input
+                    type="text"
+                    value={buysDetail}
+                    onChange={(e) => {
+                      setBuysDetail(e.target.value);
+                    }}
+                    placeholder={db.detail}
+                    className="w-24"
+                  />
+                </div>
               ) : (
                 <p className="text-l">
                   {db.buysPrice.toLocaleString()}
