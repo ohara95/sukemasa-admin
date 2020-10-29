@@ -9,7 +9,7 @@ import {
   drinkCategory,
   recommendCategory,
 } from "../utils/optionData";
-import MiddleCategory from "./MiddleCategory";
+import MiddleCategory from "../components/MiddleCategory";
 import ToggleButton from "../molecules/ToggleButton";
 
 type SalesDetail = {

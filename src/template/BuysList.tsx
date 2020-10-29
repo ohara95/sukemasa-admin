@@ -13,22 +13,22 @@ type Props = {
   setBuysEditId: (param: string) => void;
   buysDetail: string;
   setBuysDetail: (param: string) => void;
-  buysPrice: string;
-  setBuysPrice: (param: string) => void;
+  editBuys: string;
+  setEditBuys: (param: string) => void;
   toggleTable: ToggleTable;
   choiceMonth: string;
 };
 
 /** 経費一覧 */
 const BuysList: FC<Props> = ({
+  editBuys,
+  setEditBuys,
   dbBuys,
   isBuysEdit,
   setBuysEditId,
   setBuysDetail,
-  setBuysPrice,
   buysDetail,
   setIsBuysEdit,
-  buysPrice,
   buysEditId,
   toggleTable,
   choiceMonth,
@@ -51,13 +51,13 @@ const BuysList: FC<Props> = ({
 
   /** 経費項目編集 */
   const upDateBuys = (id: string) => {
-    setBuysPrice("");
+    setEditBuys("");
     setBuysDetail("");
     setIsBuysEdit(!isBuysEdit);
 
-    if (buysPrice) {
+    if (editBuys) {
       buysRef.doc(id).update({
-        buysPrice: parseInt(buysPrice),
+        buysPrice: parseInt(editBuys),
       });
     }
 
@@ -127,9 +127,9 @@ const BuysList: FC<Props> = ({
                 <div className="flex">
                   <input
                     type="number"
-                    value={buysPrice}
+                    value={editBuys}
                     onChange={(e) => {
-                      setBuysPrice(e.target.value);
+                      setEditBuys(e.target.value);
                     }}
                     placeholder={db.buysPrice}
                     className="w-24"

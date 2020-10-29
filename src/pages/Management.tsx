@@ -34,6 +34,7 @@ const Management: FC<Props> = ({ history }) => {
   const [editSales, setEditSales] = useState("");
   const [isSalesEdit, setIsSalesEdit] = useState(false);
   const [salesEditId, setSalesEditId] = useState("");
+  const [editBuys, setEditBuys] = useState("");
   const [isBuysEdit, setIsBuysEdit] = useState(false);
   const [buysEditId, setBuysEditId] = useState("");
 
@@ -177,6 +178,14 @@ const Management: FC<Props> = ({ history }) => {
   // };
   console.log(choiceMonth, toggleTable);
 
+  useEffect(() => {
+    if (toggleTable === "chooseMonth" && choiceMonth === "none") {
+      alert("選択してください");
+      setToggleTable("months");
+      return;
+    }
+  }, [toggleTable]);
+
   return (
     <>
       <Header
@@ -311,14 +320,14 @@ const Management: FC<Props> = ({ history }) => {
                 dbBuys,
                 isBuysEdit,
                 setBuysEditId,
-                setBuysPrice,
                 buysDetail,
                 setBuysDetail,
                 setIsBuysEdit,
-                buysPrice,
                 buysEditId,
                 toggleTable,
                 choiceMonth,
+                editBuys,
+                setEditBuys,
               }}
             />
           </div>

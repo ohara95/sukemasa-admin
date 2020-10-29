@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { db } from "../config/firebese";
 import { Label, Select, Textarea } from "../atoms";
 import { recruitCategory } from "../utils/optionData";
+import EditStyle from "../organisms/EditStyle";
 
 type Recruit = {
   work: string;
@@ -62,9 +63,7 @@ const RecruitEdit = () => {
     }
   };
 
-  const onNoticeSubmit = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (selected === "none") {
       return alert("選択してください");
@@ -79,64 +78,19 @@ const RecruitEdit = () => {
   };
 
   return (
-    <>
-      <div id="section4" className="p-8 mt-6 lg:mt-0 rounded">
-        <form>
-          <div className="md:flex mb-6">
-            <div className="md:w-1/3">
-              <Label text="求人" size="xl" />
-            </div>
-          </div>
-
-          <div className="md:flex mb-6">
-            <div className="md:w-1/3">
-              <Label text="投稿内容" />
-            </div>
-            <div className="md:w-2/3 border-gray-400 border-2 rounded">
-              <Select
-                onChange={(e) => {
-                  setSelected(e.target.value as Select);
-                }}
-              >
-                {recruitCategory.map((category) => (
-                  <option key={category.value} value={category.value}>
-                    {category.name}
-                  </option>
-                ))}
-              </Select>
-            </div>
-          </div>
-
-          <div className="md:flex mb-6">
-            <div className="md:w-1/3">
-              <Label text="入力欄" />
-            </div>
-            <div className="md:w-2/3">
-              <Textarea
-                value={recruitObj[selected]}
-                onChange={(e) => {
-                  selectChange(e.target.value as Select);
-                }}
-                placeholder={dbData?.[selected]}
-              />
-            </div>
-          </div>
-
-          <div className="md:flex md:items-center">
-            <div className="md:w-1/3" />
-            <div className="md:w-2/3 flex justify-end">
-              <button
-                onClick={onNoticeSubmit}
-                className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
-                type="button"
-              >
-                送信
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </>
+    <EditStyle
+      title="求人"
+      onChangeSelect={(e) => {
+        setSelected(e.target.value as Select);
+      }}
+      selectCategory={recruitCategory}
+      onChangeText={(e) => {
+        selectChange(e.target.value as Select);
+      }}
+      value={recruitObj[selected]}
+      placeholder={dbData?.[selected]}
+      onClick={onSubmit}
+    />
   );
 };
 

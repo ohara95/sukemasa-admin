@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import RecruitEdit from "../template/RecruitEdit";
-import MenuEdit from "../components/MenuEdit";
+import MenuEdit from "../template/MenuEdit";
 import NoticeEdit from "../template/NoticeEdit";
 import BanquetEdit from "../components/BanquetEdit";
 import * as H from "history";
