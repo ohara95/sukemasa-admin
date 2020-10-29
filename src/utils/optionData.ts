@@ -46,3 +46,17 @@ export const noticeCategory = [
   { value: "holiday", name: "休日" },
   { value: "other", name: "その他" },
 ];
+
+type Error = {
+  1: "入力してください";
+  2: "データがありません";
+  3: "選択してください";
+  4: "ボタンをクリックしてください";
+  [param: number]: string;
+};
+export const errors: Error = {
+  1: "入力してください",
+  2: "データがありません",
+  3: "選択してください",
+  4: "ボタンをクリックしてください",
+} as const;

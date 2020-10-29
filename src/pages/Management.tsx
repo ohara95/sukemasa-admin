@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import * as H from "history";
 import { Sales, Buys, ToggleTable } from "../types";
-import { auth, db } from "../config/firebese";
+import { db } from "../config/firebese";
 import Header from "../components/Header";
 
 import BuysTodo from "../components/buysTodo";
@@ -10,7 +10,7 @@ import SalesList from "../template/SalesList";
 import BuysList from "../template/BuysList";
 import SalesInput from "../template/SalesInput";
 import BuysInput from "../template/BuysInput";
-import { Label, IconPop } from "../atoms";
+import { Label, IconPop, Alert } from "../atoms";
 import {
   month,
   dbSumCalc,
@@ -18,10 +18,15 @@ import {
   allMonthData,
   chooseGraphData,
   sort,
+  errors,
 } from "../utils";
 
 type Props = {
   history: H.History;
+};
+
+type Error = {
+  [param: string]: 1 | 2 | 3 | 4;
 };
 
 const Management: FC<Props> = ({ history }) => {
@@ -40,11 +45,11 @@ const Management: FC<Props> = ({ history }) => {
 
   const [toggleTable, setToggleTable] = useState<ToggleTable>("months");
   const [choiceMonth, setChoiceMonth] = useState("none");
-  const [inputErr, setInputErr] = useState(false);
 
   const [dbSales, setDbSales] = useState<Sales[]>([]);
   const [dbBuys, setDbBuys] = useState<Buys[]>([]);
-
+  const [isError, setIsError] = useState(false);
+  const [errorMessages, setErrorMessages] = useState<Error[]>([]);
   const setData = [...dbSales, ...dbBuys];
   const salesPriceArr = dbSales.map((data) => {
     return {
@@ -67,13 +72,14 @@ const Management: FC<Props> = ({ history }) => {
   const plusSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!salesDate || !salesPrice) {
-      setInputErr(true);
+      setErrorMessages([...errorMessages, { salesInput: 1 }]);
+      setIsError(true);
       return;
     } else {
       setSalesPrice("");
       setSalesDate("");
       salesDB(salesDate, salesPrice);
-      setInputErr(false);
+      setIsError(false);
     }
   };
 
@@ -81,14 +87,15 @@ const Management: FC<Props> = ({ history }) => {
   const minusSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!buysPrice || !buysDate || !buysDetail) {
-      setInputErr(true);
+      setIsError(true);
+      setErrorMessages([...errorMessages, { buysInput: 1 }]);
       return;
     } else {
       setBuysPrice("");
       setBuysDate("");
       setBuysDetail("");
       buysDB(buysDate, buysPrice, buysDetail);
-      setInputErr(false);
+      setIsError(false);
     }
   };
 
@@ -176,15 +183,23 @@ const Management: FC<Props> = ({ history }) => {
   //     setChoiceMonth("none");
   //   }
   // };
-  console.log(choiceMonth, toggleTable);
 
   useEffect(() => {
     if (toggleTable === "chooseMonth" && choiceMonth === "none") {
-      alert("選択してください");
-      setToggleTable("months");
-      return;
+      setIsError(true);
+      setErrorMessages([...errorMessages, { graph: 3 }]);
+    } else if (
+      toggleTable !== ("months" && "year" && "chooseMonth") &&
+      choiceMonth !== "none"
+    ) {
+      //memo toggleTableがなにも選択されてない状態にerrorを出したい
+      setIsError(true);
+      setErrorMessages([...errorMessages, { graph: 4 }]);
+    } else {
+      setIsError(false);
     }
   }, [toggleTable]);
+  const graphErr = errorMessages && errorMessages[0]?.graph;
 
   return (
     <>
@@ -198,6 +213,13 @@ const Management: FC<Props> = ({ history }) => {
       />
 
       <div>
+        {isError && graphErr && (
+          <Alert
+            text={errors[graphErr]}
+            icon="fas fa-exclamation-circle"
+            stylePlus="flex justify-center"
+          />
+        )}
         <div
           onClick={(e) => {
             setToggleTable((e.target as HTMLInputElement).value as ToggleTable);
@@ -229,10 +251,6 @@ const Management: FC<Props> = ({ history }) => {
             <option value="none">未選択</option>
             {month()}
           </select>
-          {/* <div style={{ display: "flex", flexDirection: "column" }}>
-            {choiceMonth !== "none" && (
-              <span className="text-xs">クリック！</span>
-            )} */}
           <button
             value="chooseMonth"
             className={`${
@@ -241,7 +259,6 @@ const Management: FC<Props> = ({ history }) => {
           >
             表示
           </button>
-          {/* </div> */}
         </div>
         <ManagementGraph chooseGraph={chooseGraph()} />
       </div>
@@ -254,7 +271,8 @@ const Management: FC<Props> = ({ history }) => {
               salesPrice,
               setSalesPrice,
               salesDate,
-              inputErr,
+              isError,
+              errorMessages,
             }}
           />
         </form>
@@ -267,7 +285,8 @@ const Management: FC<Props> = ({ history }) => {
               buysDate,
               setBuysDate,
               buysPrice,
-              inputErr,
+              isError,
+              errorMessages,
             }}
           />
         </form>

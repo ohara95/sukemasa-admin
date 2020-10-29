@@ -3,11 +3,12 @@ import React, { FC } from "react";
 type Props = {
   text: string;
   icon: "fas fa-exclamation-circle" | "fas fa-question-circle";
+  stylePlus?: string;
 };
-const Alert: FC<Props> = ({ text, icon }) => {
+const Alert: FC<Props> = ({ text, icon, stylePlus }) => {
   return (
     <>
-      <div role="alert" className="my-3">
+      <div role="alert" className={`my-3 ${stylePlus}`}>
         <div className="flex h-8 ">
           <div className="bg-orange-300 w-10 text-center p-2 rounded-l">
             <div className="flex justify-center h-full items-center">

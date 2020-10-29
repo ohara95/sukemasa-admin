@@ -10,6 +10,7 @@ export {
   cuisineCategory,
   drinkCategory,
   recruitCategory,
+  errors,
 } from "./optionData";
 export { sumData } from "./sameDaysCalc";
 export { sort } from "./sort";

@@ -21,7 +21,7 @@ export type Buys = {
   id: string;
 };
 
-export type ToggleTable = "chooseMonth" | "months" | "year" | "";
+export type ToggleTable = "chooseMonth" | "months" | "year" | "none";
 
 export type Todo = {
   content: string;
