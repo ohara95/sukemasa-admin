@@ -19,6 +19,8 @@ import {
   chooseGraphData,
   sort,
   errors,
+  sumPrice,
+  sumData,
 } from "../utils";
 
 type Props = {
@@ -27,6 +29,14 @@ type Props = {
 
 type Error = {
   [param: string]: 1 | 2 | 3 | 4;
+};
+
+type CombineData = {
+  date: firebase.firestore.Timestamp;
+  salesPrice: number | number[];
+  buysPrice: number | number[];
+  detail: string | string[];
+  id: string;
 };
 
 const Management: FC<Props> = ({ history }) => {
@@ -67,6 +77,9 @@ const Management: FC<Props> = ({ history }) => {
   const managementRef = db.collection("management").doc("NcmaRejmRabdytHQfbKU");
   const salesRef = managementRef.collection("sales");
   const buysRef = managementRef.collection("buys");
+
+  const sumSalesPrice = dbSumCalc(toggleTable, salesPriceArr, choiceMonth);
+  const sumBuysPrice = dbSumCalc(toggleTable, buysPriceArr, choiceMonth);
 
   /** 売上計上 */
   const plusSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -151,24 +164,53 @@ const Management: FC<Props> = ({ history }) => {
   }, []);
 
   /** 差額表示 */
-  const difference =
-    dbSumCalc(toggleTable, salesPriceArr, choiceMonth) -
-    dbSumCalc(toggleTable, buysPriceArr, choiceMonth);
+  const difference = () => {
+    if (sumSalesPrice && sumBuysPrice) {
+      return (sumSalesPrice as number) - (sumBuysPrice as number);
+    } else {
+      return 0;
+    }
+  };
 
   /** グラフ種類選択 */
   const chooseGraph = () => {
+    //@ts-ignore
+    const sortData = sort(makeSortData(sumData(setData)));
+    // const totalData = sumData(setData);
+    // const beforeSortData = makeSortData(totalData)
+    // const sortData = sort(beforeSortData)
     switch (toggleTable) {
       case "months":
-        //@ts-ignore sortの返り値がnumberの為error
-        return graphData(sort(setData));
+        //@ts-ignore
+        return graphData(sortData);
       case "year":
+        //@ts-ignore
         return allMonthData(setData);
       case "chooseMonth":
-        //@ts-ignore sortの返り値がnumberの為error
-        return chooseGraphData(sort(setData), choiceMonth);
+        //@ts-ignore
+        return chooseGraphData(sortData, choiceMonth);
       default:
         return;
     }
+  };
+
+  const makeSortData = (graphData: CombineData[]) => {
+    return graphData.map((data) => {
+      const salesSort =
+        data.salesPrice instanceof Array
+          ? sumPrice(data.salesPrice)
+          : data.salesPrice;
+      const buysSort =
+        data.buysPrice instanceof Array
+          ? sumPrice(data.buysPrice)
+          : data.buysPrice;
+
+      return {
+        ...data,
+        salesPrice: salesSort,
+        buysPrice: buysSort,
+      };
+    });
   };
 
   //memo  他のボタン選択時に未選択(none)に変えたい
@@ -193,8 +235,8 @@ const Management: FC<Props> = ({ history }) => {
       choiceMonth !== "none"
     ) {
       //memo toggleTableがなにも選択されてない状態にerrorを出したい
-      setIsError(true);
-      setErrorMessages([...errorMessages, { graph: 4 }]);
+      // setIsError(true);
+      // setErrorMessages([...errorMessages, { graph: 4 }]);
     } else {
       setIsError(false);
     }
@@ -293,21 +335,13 @@ const Management: FC<Props> = ({ history }) => {
 
         <div className="md:w-5/12 p-3">
           <IconPop text="売上計" color="blue" icon="fas fa-plus">
-            {`${dbSumCalc(
-              toggleTable,
-              salesPriceArr,
-              choiceMonth
-            ).toLocaleString()}円`}
+            {`${sumSalesPrice?.toLocaleString()}円`}
           </IconPop>
           <IconPop text="経費計" color="red" icon="fas fa-minus">
-            {`${dbSumCalc(
-              toggleTable,
-              buysPriceArr,
-              choiceMonth
-            ).toLocaleString()}円`}
+            {`${sumBuysPrice?.toLocaleString()}円`}
           </IconPop>
           <IconPop text="差額" color="green" icon="fas fa-hand-holding-usd">
-            {`${difference.toLocaleString()}円`}
+            {`${difference().toLocaleString()}円`}
           </IconPop>
         </div>
       </div>

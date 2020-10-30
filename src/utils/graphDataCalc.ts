@@ -4,21 +4,29 @@ import { toMonth } from "./month";
 import { sumPrice } from "./arrCalc";
 import { Sales, Buys } from "../types";
 
+type CombineData = {
+  date: firebase.firestore.Timestamp;
+  salesPrice: number[];
+  buysPrice: number[];
+  detail: string[];
+  id: string;
+};
+
 /** 今月のグラフデータ */
-export const graphData = (dbData: (Sales | Buys)[]) => {
+export const graphData = (dbData: CombineData[]) => {
   return sumData(dbData)
     .filter((data) => parseInt(format(data.date.toDate(), "MM")) === toMonth)
     .map((data) => {
       return {
         日付: format(data.date.toDate(), "MM/dd"),
-        売上: sumPrice(data.salesPrice),
-        経費: sumPrice(data.buysPrice),
+        売上: sumPrice(data.salesPrice[0] as number[]),
+        経費: sumPrice(data.buysPrice[0] as number[]),
       };
     });
 };
 
 /** 年間のグラフデータ */
-export const allMonthData = (dbData: (Sales | Buys)[]) => {
+export const allMonthData = (dbData: CombineData[]) => {
   let arr = [];
   const totalData = sumData(dbData);
 
@@ -28,12 +36,8 @@ export const allMonthData = (dbData: (Sales | Buys)[]) => {
         format(data.date.toDate(), "MM") === format(key.date.toDate(), "MM")
     );
     if (item) {
-      if (item.buysPrice) {
-        Object.assign(item.buysPrice, key.buysPrice);
-      }
-      if (item.salesPrice) {
-        Object.assign(item.salesPrice, key.salesPrice);
-      }
+      if (item.buysPrice) Object.assign(item.buysPrice, key.buysPrice);
+      if (item.salesPrice) Object.assign(item.salesPrice, key.salesPrice);
       continue;
     }
     arr.push({ ...key });
@@ -41,25 +45,22 @@ export const allMonthData = (dbData: (Sales | Buys)[]) => {
   const newArr = arr.map((data) => {
     return {
       日付: `${format(data.date.toDate(), "MM")}月`,
-      売上: sumPrice(data.salesPrice),
-      経費: sumPrice(data.buysPrice),
+      売上: sumPrice(data.salesPrice[0] as number[]),
+      経費: sumPrice(data.buysPrice[0] as number[]),
     };
   });
   return newArr;
 };
 
 /** 月指定のグラフデータ */
-export const chooseGraphData = (
-  dbData: (Sales | Buys)[],
-  chooseBtn: string
-) => {
+export const chooseGraphData = (dbData: CombineData[], chooseBtn: string) => {
   return sumData(dbData)
-    .filter((data) => format(data.date.toDate(), "MM") == chooseBtn)
+    .filter((data) => format(data.date.toDate(), "MM") === chooseBtn)
     .map((data) => {
       return {
         日付: format(data.date.toDate(), "MM/dd"),
-        売上: sumPrice(data.salesPrice),
-        経費: sumPrice(data.buysPrice),
+        売上: sumPrice(data.salesPrice[0] as number[]),
+        経費: sumPrice(data.buysPrice[0] as number[]),
       };
     });
 };

@@ -9,6 +9,7 @@ type PriceArr = {
   price: number;
 };
 
+/** グラフ選択に合わせてデータを計算 */
 export const dbSumCalc = (
   toggleTable: ToggleTable,
   priceArr: PriceArr[],
@@ -18,13 +19,13 @@ export const dbSumCalc = (
     const filterPrice = priceArr.filter(
       (data) => format(data.date.toDate(), "MM") === chooseBtn
     );
-    return sumPrice(filterPrice.map((data) => data.price));
+    if (filterPrice) return sumPrice(filterPrice.map((data) => data.price));
   } else if (toggleTable === "months") {
     const filterPrice = priceArr.filter(
       (data) => parseInt(format(data.date.toDate(), "MM")) === toMonth
     );
-    return sumPrice(filterPrice.map((data) => data.price));
+    if (filterPrice) return sumPrice(filterPrice.map((data) => data.price));
   } else {
-    return sumPrice(priceArr.map((data) => data.price));
+    if (priceArr) return sumPrice(priceArr.map((data) => data.price));
   }
 };
