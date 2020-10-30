@@ -107,7 +107,7 @@ const SalesList: FC<Props> = ({
                   placeholder={db.salesPrice}
                 />
               ) : (
-                <p className="text-l">{db.salesPrice.toLocaleString()}円</p>
+                <p className="text-l">{db.salesPrice?.toLocaleString()}円</p>
               )}
             </div>
           </div>

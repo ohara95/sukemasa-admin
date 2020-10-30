@@ -1,24 +1,13 @@
 import { sumPrice } from "./arrCalc";
 type CombineData = {
   date: firebase.firestore.Timestamp;
-  salesPrice: number | number[];
-  buysPrice: number | number[];
-  detail: string | string[];
+  salesPrice: number;
+  buysPrice: number;
+  detail: string;
   id: string;
 };
-// type SalesProps = {
-//   date: firebase.firestore.Timestamp;
-//   salesPrice: number;
-//   id: string;
-// };
-// type BuysProps = {
-//   detail?: string;
-//   buysPrice?: number;
-//   date: firebase.firestore.Timestamp;
-//   id: string;
-// };
 
-/** 同じ日付の金額を配列にまとめる */
+/** 同じ日付の金額を合算 */
 export const sumData = (selectData: CombineData[]) => {
   const res = [];
   for (const key of selectData) {
@@ -26,54 +15,50 @@ export const sumData = (selectData: CombineData[]) => {
     if (item) {
       // resで作った配列にpush
       // 同じ日付のデータのみ
-      if (item.detail && key.detail) item.detail.push(key.detail);
-      if (item.buysPrice && key.buysPrice) item.buysPrice.push(key.buysPrice);
-      if (item.salesPrice && key.salesPrice)
-        item.salesPrice.push(key.salesPrice);
+      if (item.detail && key.detail) {
+        item.detail.push(key.detail);
+      }
+      if (item.buysPrice && key.buysPrice) {
+        if (Array.isArray(item.buysPrice)) item.buysPrice.push(key.buysPrice);
+      }
+      if (item.salesPrice && key.salesPrice) {
+        if (Array.isArray(item.salesPrice))
+          item.salesPrice.push(key.salesPrice);
+      }
     } else {
+      const buysPrice = Array.isArray(key.buysPrice)
+        ? key.buysPrice
+        : [key.buysPrice];
+      const salesPrice = Array.isArray(key.salesPrice)
+        ? key.salesPrice
+        : [key.salesPrice];
+      const detail = Array.isArray(key.detail) ? key.detail : [key.detail];
+
       if (key.detail && key.buysPrice) {
         if (key.salesPrice) {
           res.push({
             ...key,
-            buysPrice: [key.buysPrice],
-            salesPrice: [key.salesPrice],
-            detail: [key.detail],
+            buysPrice,
+            salesPrice,
+            detail,
           });
         } else {
           res.push({
             ...key,
-            buysPrice: [key.buysPrice],
-            salesPrice: [],
-            detail: [key.detail],
+            buysPrice,
+            salesPrice: [0],
+            detail,
           });
         }
       } else if (key.salesPrice) {
         res.push({
           ...key,
-          buysPrice: [],
-          salesPrice: [key.salesPrice],
-          detail: [],
+          buysPrice: [0],
+          salesPrice,
+          detail: [] as string[],
         });
       }
     }
   }
   return res;
 };
-
-// const test = (selectData: CombineData[]) => {
-//   const newArr: CombineData[] = [];
-//   const set = new Set();
-//   selectData.forEach((dateCheck) => {
-//     if (set.has(dateCheck.date)) {
-//       newArr.forEach((el, i) => {
-//         if (dateCheck.date === el.date) {
-//           (newArr[i].buysPrice as number) += el.buysPrice as number;
-//           (newArr[i].salesPrice as number) += el.salesPrice as number;
-//         }
-//       });
-//     } else {
-//       newArr.push(dateCheck.date);
-//     }
-//   });
-//   return newArr;
-// };

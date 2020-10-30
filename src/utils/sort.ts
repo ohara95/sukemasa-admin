@@ -3,9 +3,9 @@ import { Sales, Buys } from "../types";
 
 type CombineData = {
   date: firebase.firestore.Timestamp;
-  salesPrice: number[];
-  buysPrice: number[];
-  detail: string[];
+  salesPrice: number;
+  buysPrice: number;
+  detail: string;
   id: string;
 };
 

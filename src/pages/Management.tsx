@@ -212,6 +212,9 @@ const Management: FC<Props> = ({ history }) => {
       };
     });
   };
+  //@ts-ignore
+  //年間グラフどうにかする
+  // console.log(allMonthData(makeSortData(sumData(setData))));
 
   //memo  他のボタン選択時に未選択(none)に変えたい
   //今はセレクト->表示でnoneに
