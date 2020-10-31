@@ -1,14 +1,14 @@
 import React, { FC } from "react";
 import { Label, Button, Input, Alert } from "../atoms";
 import { errors } from "../utils";
+import { ErrorDetail } from "../types";
 
 type Props = {
   salesDate: string;
   setSalesDate: (param: string) => void;
   salesPrice: string;
   setSalesPrice: (param: string) => void;
-  isError: boolean;
-  errorMessages: { [param: string]: 1 | 2 | 3 | 4 }[];
+  errorMessages: ErrorDetail;
 };
 
 const SalesInput: FC<Props> = ({
@@ -16,16 +16,16 @@ const SalesInput: FC<Props> = ({
   salesPrice,
   setSalesPrice,
   salesDate,
-  isError,
   errorMessages,
 }) => {
-  const inputErr = errorMessages && errorMessages[0]?.salesInput;
-
   return (
     <>
       <div>
-        {isError && inputErr && (
-          <Alert text={errors[inputErr]} icon="fas fa-exclamation-circle" />
+        {errorMessages?.isError && errorMessages.errorName === "salesInput" && (
+          <Alert
+            text={errorMessages.errorMessage}
+            icon="fas fa-exclamation-circle"
+          />
         )}
       </div>
 

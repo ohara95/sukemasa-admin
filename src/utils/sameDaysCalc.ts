@@ -1,11 +1,4 @@
-import { sumPrice } from "./arrCalc";
-type CombineData = {
-  date: firebase.firestore.Timestamp;
-  salesPrice: number;
-  buysPrice: number;
-  detail: string;
-  id: string;
-};
+import { CombineData } from "../types";
 
 /** 同じ日付の金額を合算 */
 export const sumData = (selectData: CombineData[]) => {

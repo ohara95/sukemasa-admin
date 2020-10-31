@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 
 type Props = {
-  text: string;
-  icon: "fas fa-exclamation-circle" | "fas fa-question-circle";
+  text?: string;
+  icon?: "fas fa-exclamation-circle" | "fas fa-question-circle";
   stylePlus?: string;
 };
 const Alert: FC<Props> = ({ text, icon, stylePlus }) => {

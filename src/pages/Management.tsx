@@ -1,6 +1,8 @@
 import React, { FC, useState, useEffect } from "react";
+import { useRecoilState } from "recoil";
 import * as H from "history";
-import { Sales, Buys, ToggleTable } from "../types";
+import { Sales, Buys, ToggleTable, CombineData } from "../types";
+import { errorData } from "../recoil_atoms";
 import { db } from "../config/firebese";
 import Header from "../components/Header";
 
@@ -19,24 +21,11 @@ import {
   chooseGraphData,
   sort,
   errors,
-  sumPrice,
   sumData,
 } from "../utils";
 
 type Props = {
   history: H.History;
-};
-
-type Error = {
-  [param: string]: 1 | 2 | 3 | 4;
-};
-
-type CombineData = {
-  date: firebase.firestore.Timestamp;
-  salesPrice: number | number[];
-  buysPrice: number | number[];
-  detail: string | string[];
-  id: string;
 };
 
 const Management: FC<Props> = ({ history }) => {
@@ -58,8 +47,7 @@ const Management: FC<Props> = ({ history }) => {
 
   const [dbSales, setDbSales] = useState<Sales[]>([]);
   const [dbBuys, setDbBuys] = useState<Buys[]>([]);
-  const [isError, setIsError] = useState(false);
-  const [errorMessages, setErrorMessages] = useState<Error[]>([]);
+  const [errorMessages, setErrorMessages] = useRecoilState(errorData);
   const setData = [...dbSales, ...dbBuys];
   const salesPriceArr = dbSales.map((data) => {
     return {
@@ -73,7 +61,6 @@ const Management: FC<Props> = ({ history }) => {
       price: data.buysPrice,
     };
   });
-
   const managementRef = db.collection("management").doc("NcmaRejmRabdytHQfbKU");
   const salesRef = managementRef.collection("sales");
   const buysRef = managementRef.collection("buys");
@@ -85,14 +72,22 @@ const Management: FC<Props> = ({ history }) => {
   const plusSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!salesDate || !salesPrice) {
-      setErrorMessages([...errorMessages, { salesInput: 1 }]);
-      setIsError(true);
+      setErrorMessages({
+        isError: true,
+        errorMessage: errors[1],
+        errorName: "salesInput",
+      });
       return;
     } else {
       setSalesPrice("");
       setSalesDate("");
       salesDB(salesDate, salesPrice);
-      setIsError(false);
+      setErrorMessages({
+        ...errorMessages,
+        isError: false,
+        errorMessage: "",
+        errorName: "",
+      });
     }
   };
 
@@ -100,15 +95,23 @@ const Management: FC<Props> = ({ history }) => {
   const minusSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!buysPrice || !buysDate || !buysDetail) {
-      setIsError(true);
-      setErrorMessages([...errorMessages, { buysInput: 1 }]);
+      setErrorMessages({
+        isError: true,
+        errorMessage: errors[1],
+        errorName: "buysInput",
+      });
       return;
     } else {
       setBuysPrice("");
       setBuysDate("");
       setBuysDetail("");
       buysDB(buysDate, buysPrice, buysDetail);
-      setIsError(false);
+      setErrorMessages({
+        ...errorMessages,
+        isError: false,
+        errorMessage: "",
+        errorName: "",
+      });
     }
   };
 
@@ -176,9 +179,6 @@ const Management: FC<Props> = ({ history }) => {
   const chooseGraph = () => {
     //@ts-ignore
     const sortData = sort(makeSortData(sumData(setData)));
-    // const totalData = sumData(setData);
-    // const beforeSortData = makeSortData(totalData)
-    // const sortData = sort(beforeSortData)
     switch (toggleTable) {
       case "months":
         //@ts-ignore
@@ -196,14 +196,8 @@ const Management: FC<Props> = ({ history }) => {
 
   const makeSortData = (graphData: CombineData[]) => {
     return graphData.map((data) => {
-      const salesSort =
-        data.salesPrice instanceof Array
-          ? sumPrice(data.salesPrice)
-          : data.salesPrice;
-      const buysSort =
-        data.buysPrice instanceof Array
-          ? sumPrice(data.buysPrice)
-          : data.buysPrice;
+      const salesSort = data.salesPrice;
+      const buysSort = data.buysPrice;
 
       return {
         ...data,
@@ -212,9 +206,6 @@ const Management: FC<Props> = ({ history }) => {
       };
     });
   };
-  //@ts-ignore
-  //年間グラフどうにかする
-  // console.log(allMonthData(makeSortData(sumData(setData))));
 
   //memo  他のボタン選択時に未選択(none)に変えたい
   //今はセレクト->表示でnoneに
@@ -231,8 +222,11 @@ const Management: FC<Props> = ({ history }) => {
 
   useEffect(() => {
     if (toggleTable === "chooseMonth" && choiceMonth === "none") {
-      setIsError(true);
-      setErrorMessages([...errorMessages, { graph: 3 }]);
+      setErrorMessages({
+        isError: true,
+        errorMessage: errors[3],
+        errorName: "graph",
+      });
     } else if (
       toggleTable !== ("months" && "year" && "chooseMonth") &&
       choiceMonth !== "none"
@@ -241,10 +235,14 @@ const Management: FC<Props> = ({ history }) => {
       // setIsError(true);
       // setErrorMessages([...errorMessages, { graph: 4 }]);
     } else {
-      setIsError(false);
+      setErrorMessages({
+        ...errorMessages,
+        isError: false,
+        errorMessage: "",
+        errorName: "",
+      });
     }
   }, [toggleTable]);
-  const graphErr = errorMessages && errorMessages[0]?.graph;
 
   return (
     <>
@@ -258,9 +256,9 @@ const Management: FC<Props> = ({ history }) => {
       />
 
       <div>
-        {isError && graphErr && (
+        {errorMessages?.isError && errorMessages.errorName === "graph" && (
           <Alert
-            text={errors[graphErr]}
+            text={errorMessages.errorMessage}
             icon="fas fa-exclamation-circle"
             stylePlus="flex justify-center"
           />
@@ -316,7 +314,6 @@ const Management: FC<Props> = ({ history }) => {
               salesPrice,
               setSalesPrice,
               salesDate,
-              isError,
               errorMessages,
             }}
           />
@@ -330,7 +327,6 @@ const Management: FC<Props> = ({ history }) => {
               buysDate,
               setBuysDate,
               buysPrice,
-              isError,
               errorMessages,
             }}
           />

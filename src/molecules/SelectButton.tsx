@@ -1,5 +1,6 @@
 import React, { FC } from "react";
-import { SwitchButton } from "../atoms";
+import { SwitchButton, Alert } from "../atoms";
+import { ErrorDetail } from "../types";
 
 type MethodProps = "add" | "edit" | "delete" | "none" | "";
 
@@ -7,9 +8,17 @@ type Props = {
   setState: (param: MethodProps) => void;
   select: MethodProps;
   color?: string;
+  alertText?: ErrorDetail;
+  alertIcon?: "fas fa-exclamation-circle" | "fas fa-question-circle";
 };
 
-const SelectButton: FC<Props> = ({ setState, select, color = "indigo" }) => (
+const SelectButton: FC<Props> = ({
+  setState,
+  select,
+  color = "indigo",
+  alertText,
+  alertIcon = "fas fa-exclamation-circle",
+}) => (
   <div className="md:w-2/3">
     <div
       className="pt-8"
@@ -17,9 +26,19 @@ const SelectButton: FC<Props> = ({ setState, select, color = "indigo" }) => (
         setState((e.target as HTMLInputElement).value as MethodProps);
       }}
     >
-      <SwitchButton value="add" text="追加" select={select} color={color} />
-      <SwitchButton value="edit" text="変更" select={select} color={color} />
-      <SwitchButton value="delete" text="削除" select={select} color={color} />
+      <div className="flex">
+        <SwitchButton value="add" text="追加" select={select} color={color} />
+        <SwitchButton value="edit" text="変更" select={select} color={color} />
+        <SwitchButton
+          value="delete"
+          text="削除"
+          select={select}
+          color={color}
+        />
+        {alertText?.isError && (
+          <Alert text={alertText?.errorMessage} icon={alertIcon} />
+        )}
+      </div>
     </div>
   </div>
 );

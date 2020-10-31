@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Label, Select, Textarea } from "../atoms";
+import { Label, Select, Textarea, Alert } from "../atoms";
 
 type Props = {
   onChangeSelect: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -9,6 +9,9 @@ type Props = {
   placeholder?: string;
   onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   title: string;
+  isAlert?: boolean;
+  alertText?: string;
+  alertIcon?: "fas fa-exclamation-circle" | "fas fa-question-circle";
 };
 
 const EditStyle: FC<Props> = ({
@@ -19,12 +22,16 @@ const EditStyle: FC<Props> = ({
   placeholder,
   onClick,
   title,
+  isAlert = false,
+  alertText,
+  alertIcon = "fas fa-exclamation-circle",
 }) => (
   <div id="section4" className="p-8 mt-6 lg:mt-0 rounded">
     <form>
       <div className="md:flex mb-6">
-        <div className="md:w-1/3">
-          <Label text={title} size="xl" />
+        <div className="md:w-1/3 flex items-center ">
+          <Label text={title} size="xl" stylePlus="mr-4" />
+          {isAlert && <Alert text={alertText} icon={alertIcon} />}
         </div>
       </div>
 

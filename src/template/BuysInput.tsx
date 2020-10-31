@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { Button, Input, Label, Alert } from "../atoms";
 import { errors } from "../utils";
+import { ErrorDetail } from "../types";
 
 type Props = {
   buysPrice: string;
@@ -9,8 +10,7 @@ type Props = {
   setBuysDetail: (param: string) => void;
   buysDate: string;
   setBuysDate: (param: string) => void;
-  isError: boolean;
-  errorMessages: { [param: string]: 1 | 2 | 3 | 4 }[];
+  errorMessages: ErrorDetail;
 };
 
 const BuysInput: FC<Props> = ({
@@ -20,15 +20,16 @@ const BuysInput: FC<Props> = ({
   buysDate,
   setBuysDate,
   buysPrice,
-  isError,
   errorMessages,
 }) => {
-  const inputErr = errorMessages && errorMessages[0]?.buysInput;
   return (
     <>
       <div>
-        {isError && inputErr && (
-          <Alert text={errors[inputErr]} icon="fas fa-exclamation-circle" />
+        {errorMessages?.isError && errorMessages.errorName === "buysInput" && (
+          <Alert
+            text={errorMessages.errorMessage}
+            icon="fas fa-exclamation-circle"
+          />
         )}
       </div>
       <div className="mb-4">

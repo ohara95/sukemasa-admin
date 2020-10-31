@@ -2,15 +2,7 @@ import { sumData } from "./sameDaysCalc";
 import { format } from "date-fns";
 import { toMonth } from "./month";
 import { sumPrice } from "./arrCalc";
-import { Sales, Buys } from "../types";
-
-type CombineData = {
-  date: firebase.firestore.Timestamp;
-  salesPrice: number;
-  buysPrice: number;
-  detail: string;
-  id: string;
-};
+import { CombineData } from "../types";
 
 /** 今月のグラフデータ */
 export const graphData = (dbData: CombineData[]) => {

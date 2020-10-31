@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { errorData } from "../recoil_atoms";
 import { db } from "../config/firebese";
 import { Label, Select } from "../atoms";
-import { editMenuDb } from "../utils";
 import SelectButton from "../molecules/SelectButton";
 import {
+  editMenuDb,
   category,
   cuisineCategory,
   drinkCategory,
   recommendCategory,
-} from "../utils/optionData";
+  errors,
+} from "../utils";
 import MiddleCategory from "../components/MiddleCategory";
 import ToggleButton from "../molecules/ToggleButton";
 
@@ -35,6 +38,8 @@ const MenuEdit = () => {
   const [selectRecommend, setSelectRecommend] = useState("none");
   const [selectCategory, setSelectCategory] = useState<Category>("none");
   const [selectId, setSelectId] = useState("");
+  const [errorName, setErrorName] = useState("");
+  const [errorMessages, setErrorMessages] = useRecoilState(errorData);
 
   const menuRef = db.collection("menu").doc("ya3NEbDICuOTwfUWcHQs");
   const methodObj = { none: "", cuisine, drink, recommend };
@@ -62,15 +67,32 @@ const MenuEdit = () => {
 
     //---バリデーション---//
     if (selectCategory === "none") {
-      return alert("カテゴリーを選択してください(大)");
+      setErrorMessages({
+        isError: true,
+        errorMessage: errors[5],
+        errorName: "major",
+      });
+      return;
     } else if (
       selectCuisine === "none" &&
       selectDrink === "none" &&
       selectRecommend === "none"
     ) {
-      return alert("カテゴリーを選択してください(中)");
+      setErrorMessages({
+        isError: true,
+        errorMessage: errors[6],
+        errorName: "middle",
+      });
+      return;
     } else if (selectId === "" && method !== "add") {
-      return alert("カテゴリーを選択してください(小)");
+      setErrorMessages({
+        isError: true,
+        errorMessage: errors[7],
+        errorName: "sub",
+      });
+      return;
+    } else {
+      setErrorMessages({ ...errorMessages, isError: false });
     }
     //----バリデーション---//
 
@@ -113,6 +135,7 @@ const MenuEdit = () => {
         );
         break;
       default:
+        break;
     }
   };
 
@@ -138,13 +161,11 @@ const MenuEdit = () => {
           optionData={cuisineCategory}
         />
       );
-    }
-    if (selectCategory === "drink") {
+    } else if (selectCategory === "drink") {
       return (
         <MiddleCategory setState={setSelectDrink} optionData={drinkCategory} />
       );
-    }
-    if (selectCategory === "recommend") {
+    } else if (selectCategory === "recommend") {
       return (
         <MiddleCategory
           setState={setSelectRecommend}
@@ -188,7 +209,11 @@ const MenuEdit = () => {
             <div className="md:w-1/3">
               <Label text="メニュー" size="xl" />
             </div>
-            <SelectButton setState={setMethod} select={method} />
+            <SelectButton
+              setState={setMethod}
+              select={method}
+              alertText={errorMessages}
+            />
           </div>
           {method !== "" && (
             <>

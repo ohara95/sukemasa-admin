@@ -4,11 +4,14 @@ type Props = {
   text: string;
   size?: string;
   color?: string;
+  stylePlus?: string;
 };
-const Label: FC<Props> = ({ text, size = "l", color = "gray" }) => {
+const Label: FC<Props> = ({ text, size = "l", color = "gray", stylePlus }) => {
   return (
     <>
-      <label className={`block text-${color}-700 text-${size} font-bold mb-2`}>
+      <label
+        className={`block text-${color}-700 text-${size} font-bold mb-2 ${stylePlus}`}
+      >
         {text}
       </label>
     </>

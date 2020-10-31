@@ -9,6 +9,7 @@ export {
   category,
   cuisineCategory,
   drinkCategory,
+  recommendCategory,
   recruitCategory,
   errors,
 } from "./optionData";
