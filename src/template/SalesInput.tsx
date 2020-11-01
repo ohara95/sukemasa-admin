@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import { Label, Button, Input, Alert } from "../atoms";
-import { errors } from "../utils";
 import { ErrorDetail } from "../types";
 
 type Props = {

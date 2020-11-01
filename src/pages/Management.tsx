@@ -187,8 +187,10 @@ const Management: FC<Props> = ({ history }) => {
         //@ts-ignore
         return allMonthData(setData);
       case "chooseMonth":
-        //@ts-ignore
-        return chooseGraphData(sortData, choiceMonth);
+        if (choiceMonth !== "none") {
+          //@ts-ignore
+          return chooseGraphData(sortData, choiceMonth);
+        }
       default:
         return;
     }
@@ -207,42 +209,13 @@ const Management: FC<Props> = ({ history }) => {
     });
   };
 
-  //memo  他のボタン選択時に未選択(none)に変えたい
-  //今はセレクト->表示でnoneに
-  //その他表示セレクト選択->noneに
-  //表示は未選択にはならない しかもデータ表示されない
-  // const choiceBtn = (value: string) => {
-  //   setChoiceMonth(value);
-  //   console.log(toggleTable); //selectを押すとtoggleTableがnoneになる(そういう設定してない...)
-
-  //   if (toggleTable !== "none") {
-  //     setChoiceMonth("none");
-  //   }
-  // };
-
+  //memo consoleはnoneになるけど表示はかわってない
   useEffect(() => {
-    if (toggleTable === "chooseMonth" && choiceMonth === "none") {
-      setErrorMessages({
-        isError: true,
-        errorMessage: errors[3],
-        errorName: "graph",
-      });
-    } else if (
-      toggleTable !== ("months" && "year" && "chooseMonth") &&
-      choiceMonth !== "none"
-    ) {
-      //memo toggleTableがなにも選択されてない状態にerrorを出したい
-      // setIsError(true);
-      // setErrorMessages([...errorMessages, { graph: 4 }]);
-    } else {
-      setErrorMessages({
-        ...errorMessages,
-        isError: false,
-        errorMessage: "",
-        errorName: "",
-      });
+    if (toggleTable !== "chooseMonth") {
+      setChoiceMonth("none");
     }
   }, [toggleTable]);
+  console.log(toggleTable, choiceMonth);
 
   return (
     <>
@@ -263,25 +236,24 @@ const Management: FC<Props> = ({ history }) => {
             stylePlus="flex justify-center"
           />
         )}
-        <div
-          onClick={(e) => {
-            setToggleTable((e.target as HTMLInputElement).value as ToggleTable);
-          }}
-          className="mx-auto my-2 w-2/12 flex"
-        >
+        <div className="mx-auto my-2 w-2/12 flex">
           <button
-            value="months"
+            onClick={() => {
+              setToggleTable("months");
+            }}
             className={`${
               toggleTable === "months" ? "bg-teal-600" : "bg-teal-500"
-            } text-white px-3 rounded-l`}
+            } text-white rounded-l py-3 px-5 focus:outline-none`}
           >
             月間
           </button>
           <button
-            value="year"
+            onClick={() => {
+              setToggleTable("year");
+            }}
             className={`${
               toggleTable === "year" ? "bg-teal-600" : "bg-teal-500"
-            } text-white px-3 rounded-r`}
+            } text-white  py-3 px-5 focus:outline-none`}
           >
             年間
           </button>
@@ -289,19 +261,16 @@ const Management: FC<Props> = ({ history }) => {
             onChange={(e) => {
               setChoiceMonth(e.target.value);
             }}
-            className="bg-white"
+            onClick={() => {
+              setToggleTable("chooseMonth");
+            }}
+            className={`${
+              toggleTable === "chooseMonth" ? "bg-teal-600" : "bg-teal-500"
+            } focus:outline-none p-3 rounded-r text-white`}
           >
             <option value="none">未選択</option>
             {month()}
           </select>
-          <button
-            value="chooseMonth"
-            className={`${
-              toggleTable === "chooseMonth" ? "bg-teal-600" : "bg-teal-500"
-            } text-white py-1 px-3 rounded`}
-          >
-            表示
-          </button>
         </div>
         <ManagementGraph chooseGraph={chooseGraph()} />
       </div>
