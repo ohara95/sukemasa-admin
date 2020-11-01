@@ -209,13 +209,11 @@ const Management: FC<Props> = ({ history }) => {
     });
   };
 
-  //memo consoleはnoneになるけど表示はかわってない
   useEffect(() => {
     if (toggleTable !== "chooseMonth") {
       setChoiceMonth("none");
     }
   }, [toggleTable]);
-  console.log(toggleTable, choiceMonth);
 
   return (
     <>
@@ -236,14 +234,14 @@ const Management: FC<Props> = ({ history }) => {
             stylePlus="flex justify-center"
           />
         )}
-        <div className="mx-auto my-2 w-2/12 flex">
+        <div className="mx-auto my-2 w-2/12 md:w-2/6 md:justify-center flex">
           <button
             onClick={() => {
               setToggleTable("months");
             }}
             className={`${
               toggleTable === "months" ? "bg-teal-600" : "bg-teal-500"
-            } text-white rounded-l py-3 px-5 focus:outline-none`}
+            } text-white rounded-l md:py-3 md:px-5 focus:outline-none`}
           >
             月間
           </button>
@@ -253,11 +251,12 @@ const Management: FC<Props> = ({ history }) => {
             }}
             className={`${
               toggleTable === "year" ? "bg-teal-600" : "bg-teal-500"
-            } text-white  py-3 px-5 focus:outline-none`}
+            } text-white  md:py-3 md:px-5 focus:outline-none`}
           >
             年間
           </button>
           <select
+            value={choiceMonth}
             onChange={(e) => {
               setChoiceMonth(e.target.value);
             }}
@@ -266,7 +265,7 @@ const Management: FC<Props> = ({ history }) => {
             }}
             className={`${
               toggleTable === "chooseMonth" ? "bg-teal-600" : "bg-teal-500"
-            } focus:outline-none p-3 rounded-r text-white`}
+            } focus:outline-none md:p-3 rounded-r text-white`}
           >
             <option value="none">未選択</option>
             {month()}
