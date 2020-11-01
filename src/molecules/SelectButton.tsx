@@ -10,6 +10,7 @@ type Props = {
   color?: string;
   alertText?: ErrorDetail;
   alertIcon?: "fas fa-exclamation-circle" | "fas fa-question-circle";
+  alertType?: string;
 };
 
 const SelectButton: FC<Props> = ({
@@ -18,6 +19,7 @@ const SelectButton: FC<Props> = ({
   color = "indigo",
   alertText,
   alertIcon = "fas fa-exclamation-circle",
+  alertType,
 }) => (
   <div className="md:w-2/3">
     <div
@@ -35,7 +37,7 @@ const SelectButton: FC<Props> = ({
           select={select}
           color={color}
         />
-        {alertText?.isError && (
+        {alertText?.isError && alertText.errorName === alertType && (
           <Alert text={alertText?.errorMessage} icon={alertIcon} />
         )}
       </div>

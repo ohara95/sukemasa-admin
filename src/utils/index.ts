@@ -11,6 +11,7 @@ export {
   drinkCategory,
   recommendCategory,
   recruitCategory,
+  noticeCategory,
   errors,
 } from "./optionData";
 export { sumData } from "./sameDaysCalc";

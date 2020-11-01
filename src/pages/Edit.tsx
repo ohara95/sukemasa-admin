@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import RecruitEdit from "../template/RecruitEdit";
 import MenuEdit from "../template/MenuEdit";
 import NoticeEdit from "../template/NoticeEdit";
-import BanquetEdit from "../components/BanquetEdit";
+import BanquetEdit from "../template/BanquetEdit";
 import * as H from "history";
 import Header from "../components/Header";
 

@@ -1,7 +1,8 @@
 import React, { FC, useState, useEffect } from "react";
-import firebase, { db } from "../config/firebese";
-import { Label, Select, Textarea } from "../atoms";
-import { noticeCategory } from "../utils/optionData";
+import { useRecoilState } from "recoil";
+import { errorData } from "../recoil_atoms";
+import { db } from "../config/firebese";
+import { noticeCategory, errors } from "../utils";
 import EditStyle from "../organisms/EditStyle";
 
 type selectedProps = "holiday" | "other" | "none";
@@ -16,6 +17,7 @@ const NoticeEdit: FC = () => {
   const [other, setOther] = useState("");
   const [selected, setSelected] = useState<selectedProps>("none");
   const [dbData, setDbData] = useState<Notice>();
+  const [errorMessages, setErrorMessages] = useRecoilState(errorData);
 
   const noticeRef = db.collection("notice").doc("f3068OjZY4BqCj3QiLjO");
   useEffect(() => {
@@ -26,11 +28,21 @@ const NoticeEdit: FC = () => {
 
   const addDBNotice = () => {
     if (!noticeObj[selected]) {
-      return alert("入力してください");
+      return setErrorMessages({
+        isError: true,
+        errorMessage: errors[1],
+        errorName: "notice",
+      });
     } else {
       noticeRef
         .update({ [selected]: noticeObj[selected] })
-        .then()
+        .then(() =>
+          setErrorMessages({
+            isError: false,
+            errorMessage: "",
+            errorName: "",
+          })
+        )
         .catch((err) => {
           console.log(err);
         });
@@ -53,7 +65,11 @@ const NoticeEdit: FC = () => {
   ) => {
     e.preventDefault();
     if (selected === "none") {
-      return alert("選択して下さい");
+      return setErrorMessages({
+        isError: true,
+        errorMessage: errors[3],
+        errorName: "notice",
+      });
     } else {
       setHoliday("");
       setOther("");
@@ -74,6 +90,8 @@ const NoticeEdit: FC = () => {
       value={noticeObj[selected]}
       placeholder={dbData?.[selected]}
       onClick={onNoticeSubmit}
+      errorMessages={errorMessages}
+      alertType="notice"
     />
   );
 };

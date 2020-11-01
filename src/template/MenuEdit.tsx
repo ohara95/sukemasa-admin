@@ -4,6 +4,7 @@ import { errorData } from "../recoil_atoms";
 import { db } from "../config/firebese";
 import { Label, Select } from "../atoms";
 import SelectButton from "../molecules/SelectButton";
+import EditOutline from "../organisms/EditOutline";
 import {
   editMenuDb,
   category,
@@ -38,7 +39,6 @@ const MenuEdit = () => {
   const [selectRecommend, setSelectRecommend] = useState("none");
   const [selectCategory, setSelectCategory] = useState<Category>("none");
   const [selectId, setSelectId] = useState("");
-  const [errorName, setErrorName] = useState("");
   const [errorMessages, setErrorMessages] = useRecoilState(errorData);
 
   const menuRef = db.collection("menu").doc("ya3NEbDICuOTwfUWcHQs");
@@ -65,12 +65,12 @@ const MenuEdit = () => {
   const onMenuSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
 
-    //---バリデーション---//
+    //---セレクタバリデーション---//
     if (selectCategory === "none") {
       setErrorMessages({
         isError: true,
         errorMessage: errors[5],
-        errorName: "major",
+        errorName: "menu",
       });
       return;
     } else if (
@@ -81,20 +81,20 @@ const MenuEdit = () => {
       setErrorMessages({
         isError: true,
         errorMessage: errors[6],
-        errorName: "middle",
+        errorName: "menu",
       });
       return;
     } else if (selectId === "" && method !== "add") {
       setErrorMessages({
         isError: true,
         errorMessage: errors[7],
-        errorName: "sub",
+        errorName: "menu",
       });
       return;
     } else {
-      setErrorMessages({ ...errorMessages, isError: false });
+      setErrorMessages({ isError: false, errorMessage: "", errorName: "" });
     }
-    //----バリデーション---//
+    //----セレクタバリデーション---//
 
     //memo 短くしたい...
     switch (selectCategory) {
@@ -107,7 +107,8 @@ const MenuEdit = () => {
           selectCategory,
           selectId,
           setCuisine,
-          setPrice
+          setPrice,
+          setErrorMessages
         );
         break;
       case "drink":
@@ -119,7 +120,8 @@ const MenuEdit = () => {
           selectCategory,
           selectId,
           setDrink,
-          setPrice
+          setPrice,
+          setErrorMessages
         );
         break;
       case "recommend":
@@ -131,7 +133,8 @@ const MenuEdit = () => {
           selectCategory,
           selectId,
           setRecommend,
-          setPrice
+          setPrice,
+          setErrorMessages
         );
         break;
       default:
@@ -203,109 +206,103 @@ const MenuEdit = () => {
 
   return (
     <>
-      <div id="section1" className="p-8 mt-6 lg:mt-0 rounded">
-        <form>
-          <div className="md:flex mb-6">
-            <div className="md:w-1/3">
-              <Label text="メニュー" size="xl" />
+      <EditOutline
+        title="メニュー"
+        setState={setMethod}
+        select={method}
+        alertText={errorMessages}
+        alertType="menu"
+      >
+        {method !== "" && (
+          <>
+            <div className="md:flex mb-6">
+              <div className="md:w-1/3">
+                <Label text="メニューカテゴリ(大分類)" />
+              </div>
+              <div className="md:w-2/3 border-gray-400 border-2 rounded">
+                <Select
+                  onChange={(e) => {
+                    setSelectCategory(e.target.value as Category);
+                  }}
+                >
+                  {category.map((category) => (
+                    <option key={category.value} value={category.value}>
+                      {category.name}
+                    </option>
+                  ))}
+                </Select>
+              </div>
             </div>
-            <SelectButton
-              setState={setMethod}
-              select={method}
-              alertText={errorMessages}
-            />
-          </div>
-          {method !== "" && (
-            <>
+
+            {selectCategory !== "none" && (
               <div className="md:flex mb-6">
                 <div className="md:w-1/3">
-                  <Label text="メニューカテゴリ(大分類)" />
+                  <Label text="メニューカテゴリ(中分類)" />
                 </div>
                 <div className="md:w-2/3 border-gray-400 border-2 rounded">
-                  <Select
-                    onChange={(e) => {
-                      setSelectCategory(e.target.value as Category);
-                    }}
-                  >
-                    {category.map((category) => (
-                      <option key={category.value} value={category.value}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </Select>
+                  {selected()}
                 </div>
               </div>
+            )}
 
-              {selectCategory !== "none" && (
+            {(selectDrink !== "none" ||
+              selectCuisine !== "none" ||
+              selectRecommend !== "none") &&
+              method !== "add" && (
                 <div className="md:flex mb-6">
                   <div className="md:w-1/3">
-                    <Label text="メニューカテゴリ(中分類)" />
+                    <Label text="メニューカテゴリ(小分類)" />
                   </div>
                   <div className="md:w-2/3 border-gray-400 border-2 rounded">
-                    {selected()}
+                    <Select onChange={(e) => setSelectId(e.target.value)}>
+                      <option value="none">選択してください</option>
+                      {editOption()}
+                    </Select>
                   </div>
                 </div>
               )}
 
-              {(selectDrink !== "none" ||
-                selectCuisine !== "none" ||
-                selectRecommend !== "none") &&
-                method !== "add" && (
-                  <div className="md:flex mb-6">
-                    <div className="md:w-1/3">
-                      <Label text="メニューカテゴリ(小分類)" />
-                    </div>
-                    <div className="md:w-2/3 border-gray-400 border-2 rounded">
-                      <Select onChange={(e) => setSelectId(e.target.value)}>
-                        <option value="none">選択してください</option>
-                        {editOption()}
-                      </Select>
-                    </div>
+            {method !== "delete" && (
+              <>
+                <div className="md:flex mb-6">
+                  <div className="md:w-1/3">
+                    <Label text="メニュー名" />
                   </div>
-                )}
+                  <div className="md:w-2/3">
+                    <input
+                      className="w-full border-gray-400 border-2 rounded py-3 px-3"
+                      value={methodObj[selectCategory]}
+                      onChange={(e) => {
+                        controlChange(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="md:flex mb-6">
+                  <div className="md:w-1/3">
+                    <Label text="金額" />
+                  </div>
+                  <div className="md:w-2/3">
+                    <input
+                      className="w-full border-gray-400 border-2 rounded py-3 px-3"
+                      value={price}
+                      onChange={(e) => {
+                        setPrice(e.target.value);
+                      }}
+                      type="number"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
 
-              {method !== "delete" && (
-                <>
-                  <div className="md:flex mb-6">
-                    <div className="md:w-1/3">
-                      <Label text="メニュー名" />
-                    </div>
-                    <div className="md:w-2/3">
-                      <input
-                        className="w-full border-gray-400 border-2 rounded py-3 px-3"
-                        value={methodObj[selectCategory]}
-                        onChange={(e) => {
-                          controlChange(e.target.value);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="md:flex mb-6">
-                    <div className="md:w-1/3">
-                      <Label text="金額" />
-                    </div>
-                    <div className="md:w-2/3">
-                      <input
-                        className="w-full border-gray-400 border-2 rounded py-3 px-3"
-                        value={price}
-                        onChange={(e) => {
-                          setPrice(e.target.value);
-                        }}
-                        type="number"
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
-
-              <div className="md:flex md:items-center">
-                <div className="md:w-1/3 " />
-                <ToggleButton select={method} func={onMenuSubmit} />
-              </div>
-            </>
-          )}
-        </form>
-      </div>
+            <div className="md:flex md:items-center">
+              <div className="md:w-1/3 " />
+              <ToggleButton select={method} func={onMenuSubmit} />
+            </div>
+          </>
+        )}
+      </EditOutline>
     </>
   );
 };

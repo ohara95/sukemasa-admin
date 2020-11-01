@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { errorData } from "../recoil_atoms";
 import { db } from "../config/firebese";
-import { Label, Select, Textarea } from "../atoms";
-import { recruitCategory } from "../utils/optionData";
+import { Select } from "../atoms";
+import { recruitCategory, errors } from "../utils/optionData";
 import EditStyle from "../organisms/EditStyle";
 
 type Recruit = {
@@ -24,6 +26,7 @@ const RecruitEdit = () => {
   const [time, setTime] = useState("");
   const [welfare, setWelfare] = useState("");
   const [dbData, setDbData] = useState<Recruit>();
+  const [errorMessages, setErrorMessages] = useRecoilState(errorData);
 
   const recruitRef = db.collection("recruit").doc("eTLykSLZuPvi6iJ48vNB");
   useEffect(() => {
@@ -34,12 +37,22 @@ const RecruitEdit = () => {
 
   const addDBRecruit = () => {
     if (!recruitObj[selected]) {
-      return alert("入力してください");
+      return setErrorMessages({
+        isError: true,
+        errorMessage: errors[1],
+        errorName: "recruit",
+      });
     } else {
       db.collection("recruit")
         .doc("eTLykSLZuPvi6iJ48vNB")
         .update({ [selected]: recruitObj[selected] })
-        .then()
+        .then(() =>
+          setErrorMessages({
+            isError: false,
+            errorMessage: "",
+            errorName: "",
+          })
+        )
         .catch((err) => {
           console.log(err);
         });
@@ -66,7 +79,11 @@ const RecruitEdit = () => {
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (selected === "none") {
-      return alert("選択してください");
+      return setErrorMessages({
+        isError: true,
+        errorMessage: errors[3],
+        errorName: "recruit",
+      });
     } else {
       addDBRecruit();
       setWork("");
@@ -90,6 +107,8 @@ const RecruitEdit = () => {
       value={recruitObj[selected]}
       placeholder={dbData?.[selected]}
       onClick={onSubmit}
+      errorMessages={errorMessages}
+      alertType="recruit"
     />
   );
 };

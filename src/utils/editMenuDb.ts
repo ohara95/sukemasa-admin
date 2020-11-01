@@ -1,4 +1,6 @@
 import { db } from "../config/firebese";
+import { errors } from "../utils";
+import { ErrorDetail } from "../types";
 
 export const editMenuDb = (
   item: string,
@@ -8,16 +10,24 @@ export const editMenuDb = (
   name: string,
   id: string,
   clearItem: (param: string) => void,
-  clearPrice: (param: string) => void
+  clearPrice: (param: string) => void,
+  setErrorMessage: (param: ErrorDetail) => void
 ) => {
   const Ref = db
     .collection("menu")
     .doc("ya3NEbDICuOTwfUWcHQs")
     .collection(name);
 
+  const reset = () =>
+    setErrorMessage({ isError: false, errorMessage: "", errorName: "" });
+
   if (selectMethod === "add") {
     if (!item || !price) {
-      return alert("入力漏れがあります");
+      return setErrorMessage({
+        isError: true,
+        errorMessage: errors[8],
+        errorName: "menu",
+      });
     }
     Ref.add({
       item,
@@ -26,30 +36,35 @@ export const editMenuDb = (
     }).then(() => {
       clearItem("");
       clearPrice("");
+      reset();
     });
   } else if (selectMethod === "edit") {
-    Ref.doc(id)
-      .get()
-      .then((res) => {
-        if (!item && !price) {
-          return alert("入力してください");
-        } else if (!price) {
-          res.ref.update({ item });
-        } else if (!item) {
-          res.ref.update({ price: parseInt(price) });
-        }
-      })
-      .then(() => {
-        clearItem("");
-        clearPrice("");
+    if (!item && !price) {
+      return setErrorMessage({
+        isError: true,
+        errorMessage: errors[1],
+        errorName: "menu",
       });
+    } else {
+      Ref.doc(id)
+        .get()
+        .then((res) => {
+          if (!price) {
+            res.ref.update({ item });
+          } else if (!item) {
+            res.ref.update({ price: parseInt(price) });
+          }
+        })
+        .then(() => {
+          clearItem("");
+          clearPrice("");
+          reset();
+        });
+    }
   } else if (selectMethod === "delete") {
     Ref.doc(id)
       .get()
       .then((res) => res.ref.delete())
-      .then(() => {
-        clearItem("");
-        clearPrice("");
-      });
+      .then(() => reset());
   }
 };

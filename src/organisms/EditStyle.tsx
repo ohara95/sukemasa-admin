@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { Label, Select, Textarea, Alert } from "../atoms";
+import { ErrorDetail } from "../types";
 
 type Props = {
   onChangeSelect: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -12,6 +13,8 @@ type Props = {
   isAlert?: boolean;
   alertText?: string;
   alertIcon?: "fas fa-exclamation-circle" | "fas fa-question-circle";
+  errorMessages: ErrorDetail;
+  alertType: string;
 };
 
 const EditStyle: FC<Props> = ({
@@ -22,16 +25,18 @@ const EditStyle: FC<Props> = ({
   placeholder,
   onClick,
   title,
-  isAlert = false,
-  alertText,
   alertIcon = "fas fa-exclamation-circle",
+  errorMessages,
+  alertType,
 }) => (
-  <div id="section4" className="p-8 mt-6 lg:mt-0 rounded">
+  <div className="p-8 mt-6 lg:mt-0 rounded">
     <form>
       <div className="md:flex mb-6">
         <div className="md:w-1/3 flex items-center ">
           <Label text={title} size="xl" stylePlus="mr-4" />
-          {isAlert && <Alert text={alertText} icon={alertIcon} />}
+          {errorMessages.isError && errorMessages.errorName === alertType && (
+            <Alert text={errorMessages.errorMessage} icon={alertIcon} />
+          )}
         </div>
       </div>
 
