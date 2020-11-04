@@ -97,6 +97,7 @@ const RecruitEdit = () => {
   return (
     <EditStyle
       title="求人"
+      id="recruit"
       onChangeSelect={(e) => {
         setSelected(e.target.value as Select);
       }}

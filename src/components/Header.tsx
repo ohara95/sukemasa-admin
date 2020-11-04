@@ -1,18 +1,17 @@
 import React, { FC } from "react";
-import { auth } from "../config/firebese";
 
 type Props = {
   onClick: any;
   title: string;
   buttonText: string;
-  logout?: boolean;
+  render?: JSX.Element;
 };
-const Temporary: FC<Props> = ({ onClick, title, buttonText, logout }) => {
+const Temporary: FC<Props> = ({ onClick, title, buttonText, render }) => {
   return (
     <>
-      <nav id="header" className="w-full z-30 top-0 py-1 flex">
-        <nav>
-          <ul className="md:flex items-center justify-between text-base text-gray-700 pt-4 md:pt-0 leading-loose">
+      <nav className="w-full z-30 top-0 py-1 flex">
+        <nav className="w-2/6 ">
+          <ul className="md:flex items-center justify-between text-base text-gray-700 pt-4 md:pt-0 leading-loose w-full">
             <li>
               <button
                 className="inline-block no-underline hover:text-black hover:underline py-2 px-4 text-center"
@@ -21,14 +20,7 @@ const Temporary: FC<Props> = ({ onClick, title, buttonText, logout }) => {
                 {buttonText}
               </button>
             </li>
-            {logout && (
-              <li>
-                <button
-                  className="fas fa-sign-out-alt text-red-500"
-                  onClick={() => auth.signOut()}
-                />
-              </li>
-            )}
+            <li className="w-full">{render}</li>
           </ul>
         </nav>
         <div className="w-full container mx-auto flex flex-wrap items-center justify-center mt-0 px-6 py-3">

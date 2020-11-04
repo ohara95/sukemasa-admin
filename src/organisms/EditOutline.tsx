@@ -10,6 +10,7 @@ type Props = {
   alertText: ErrorDetail;
   alertType: string;
   title: string;
+  id?: string;
 };
 
 const EditOutline: FC<Props> = ({
@@ -19,8 +20,9 @@ const EditOutline: FC<Props> = ({
   alertText,
   alertType,
   title,
+  id,
 }) => (
-  <div className="p-8 mt-6 lg:mt-0 rounded">
+  <div id={id} className="p-8 mt-6 lg:mt-0 rounded">
     <form>
       <div className="md:flex mb-6">
         <div className="md:w-1/3">

@@ -212,6 +212,7 @@ const MenuEdit = () => {
         select={method}
         alertText={errorMessages}
         alertType="menu"
+        id="menu"
       >
         {method !== "" && (
           <>

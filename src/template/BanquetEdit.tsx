@@ -83,6 +83,7 @@ const BanquetEdit = () => {
     <>
       <EditOutline
         title="コースメニュー"
+        id="banquet"
         setState={setMethod}
         select={method}
         alertText={errorMessages}

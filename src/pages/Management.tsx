@@ -3,7 +3,7 @@ import { useRecoilState } from "recoil";
 import * as H from "history";
 import { Sales, Buys, ToggleTable, CombineData } from "../types";
 import { errorData } from "../recoil_atoms";
-import { db } from "../config/firebese";
+import { db, auth } from "../config/firebese";
 import Header from "../components/Header";
 
 import BuysTodo from "../components/buysTodo";
@@ -219,7 +219,12 @@ const Management: FC<Props> = ({ history }) => {
         }}
         title="管理画面"
         buttonText="HP編集"
-        logout
+        render={
+          <button
+            className="fas fa-sign-out-alt text-red-500"
+            onClick={() => auth.signOut()}
+          />
+        }
       />
 
       <div>

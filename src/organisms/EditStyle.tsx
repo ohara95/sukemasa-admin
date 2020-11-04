@@ -15,6 +15,7 @@ type Props = {
   alertIcon?: "fas fa-exclamation-circle" | "fas fa-question-circle";
   errorMessages: ErrorDetail;
   alertType: string;
+  id?: string;
 };
 
 const EditStyle: FC<Props> = ({
@@ -28,8 +29,9 @@ const EditStyle: FC<Props> = ({
   alertIcon = "fas fa-exclamation-circle",
   errorMessages,
   alertType,
+  id,
 }) => (
-  <div className="p-8 mt-6 lg:mt-0 rounded">
+  <div id={id} className="p-8 mt-6 lg:mt-0 rounded">
     <form>
       <div className="md:flex mb-6">
         <div className="md:w-1/3 flex items-center ">

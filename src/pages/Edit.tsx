@@ -16,6 +16,22 @@ const Edit: FC<Props> = ({ history }) => {
         onClick={() => history.goBack()}
         title="HP編集"
         buttonText="戻る"
+        render={
+          <div className="flex justify-between ">
+            <li>
+              <a href="#menu">メニュー</a>
+            </li>
+            <li>
+              <a href="#banquet">宴会</a>
+            </li>
+            <li>
+              <a href="#recruit">求人</a>
+            </li>
+            <li>
+              <a href="#other">その他</a>
+            </li>
+          </div>
+        }
       />
       <section className="w-full">
         {/* <ImageUpLoader /> */}

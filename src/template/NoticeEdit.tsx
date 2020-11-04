@@ -80,6 +80,7 @@ const NoticeEdit: FC = () => {
   return (
     <EditStyle
       title="休日・その他"
+      id="other"
       onChangeSelect={(e) => {
         setSelected(e.target.value as selectedProps);
       }}
