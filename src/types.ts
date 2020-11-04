@@ -12,6 +12,7 @@ export type Sales = {
   date: firebase.firestore.Timestamp;
   salesPrice: number;
   id: string;
+  isChecked?: boolean;
 };
 
 export type Buys = {
@@ -19,6 +20,7 @@ export type Buys = {
   buysPrice: number;
   detail: string;
   id: string;
+  isChecked?: boolean;
 };
 
 export type ToggleTable = "chooseMonth" | "months" | "year" | "none";

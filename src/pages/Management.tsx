@@ -36,11 +36,7 @@ const Management: FC<Props> = ({ history }) => {
   const [buysDetail, setBuysDetail] = useState("");
 
   const [editSales, setEditSales] = useState("");
-  const [isSalesEdit, setIsSalesEdit] = useState(false);
-  const [salesEditId, setSalesEditId] = useState("");
   const [editBuys, setEditBuys] = useState("");
-  const [isBuysEdit, setIsBuysEdit] = useState(false);
-  const [buysEditId, setBuysEditId] = useState("");
 
   const [toggleTable, setToggleTable] = useState<ToggleTable>("months");
   const [choiceMonth, setChoiceMonth] = useState("none");
@@ -320,10 +316,6 @@ const Management: FC<Props> = ({ history }) => {
             <SalesList
               {...{
                 dbSales,
-                isSalesEdit,
-                setIsSalesEdit,
-                salesEditId,
-                setSalesEditId,
                 toggleTable,
                 choiceMonth,
                 editSales,
@@ -338,12 +330,8 @@ const Management: FC<Props> = ({ history }) => {
             <BuysList
               {...{
                 dbBuys,
-                isBuysEdit,
-                setBuysEditId,
                 buysDetail,
                 setBuysDetail,
-                setIsBuysEdit,
-                buysEditId,
                 toggleTable,
                 choiceMonth,
                 editBuys,
