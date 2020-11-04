@@ -1,5 +1,3 @@
-import { Error } from "../types";
-
 export const category = [
   { value: "none", name: "選択して下さい" },
   { value: "cuisine", name: "料理" },
@@ -48,15 +46,3 @@ export const noticeCategory = [
   { value: "holiday", name: "休日" },
   { value: "other", name: "その他" },
 ];
-
-export const errors: Error = {
-  1: "入力してください",
-  2: "データがありません",
-  3: "選択してください",
-  4: "ボタンをクリックしてください",
-  5: "カテゴリーを選択してください(大分類)",
-  6: "カテゴリーを選択してください(中分類)",
-  7: "カテゴリーを選択してください(小分類)",
-  8: "入力漏れがあります",
-  9: "コースを選択してください",
-};

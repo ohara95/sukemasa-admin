@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { errorData } from "../recoil_atoms";
 import { db } from "../config/firebese";
 import { Label, Select } from "../atoms";
-import SelectButton from "../molecules/SelectButton";
+import { ErrorDetail } from "../types";
 import EditOutline from "../organisms/EditOutline";
 import {
   editMenuDb,
@@ -11,7 +9,6 @@ import {
   cuisineCategory,
   drinkCategory,
   recommendCategory,
-  errors,
 } from "../utils";
 import MiddleCategory from "../components/MiddleCategory";
 import ToggleButton from "../molecules/ToggleButton";
@@ -39,7 +36,7 @@ const MenuEdit = () => {
   const [selectRecommend, setSelectRecommend] = useState("none");
   const [selectCategory, setSelectCategory] = useState<Category>("none");
   const [selectId, setSelectId] = useState("");
-  const [errorMessages, setErrorMessages] = useRecoilState(errorData);
+  const [errorMessage, setErrorMessage] = useState<ErrorDetail>();
 
   const menuRef = db.collection("menu").doc("ya3NEbDICuOTwfUWcHQs");
   const methodObj = { none: "", cuisine, drink, recommend };
@@ -64,13 +61,11 @@ const MenuEdit = () => {
   /** 値セット&DBに追加関数発火 */
   const onMenuSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-
     //---セレクタバリデーション---//
+
     if (selectCategory === "none") {
-      setErrorMessages({
-        isError: true,
-        errorMessage: errors[5],
-        errorName: "menu",
+      setErrorMessage({
+        message: "カテゴリーを選択してください(大分類)",
       });
       return;
     } else if (
@@ -78,21 +73,17 @@ const MenuEdit = () => {
       selectDrink === "none" &&
       selectRecommend === "none"
     ) {
-      setErrorMessages({
-        isError: true,
-        errorMessage: errors[6],
-        errorName: "menu",
+      setErrorMessage({
+        message: "カテゴリーを選択してください(中分類)",
       });
       return;
     } else if (selectId === "" && method !== "add") {
-      setErrorMessages({
-        isError: true,
-        errorMessage: errors[7],
-        errorName: "menu",
+      setErrorMessage({
+        message: "カテゴリーを選択してください(小分類)",
       });
       return;
     } else {
-      setErrorMessages({ isError: false, errorMessage: "", errorName: "" });
+      setErrorMessage({ message: "" });
     }
     //----セレクタバリデーション---//
 
@@ -108,7 +99,7 @@ const MenuEdit = () => {
           selectId,
           setCuisine,
           setPrice,
-          setErrorMessages
+          setErrorMessage
         );
         break;
       case "drink":
@@ -121,7 +112,7 @@ const MenuEdit = () => {
           selectId,
           setDrink,
           setPrice,
-          setErrorMessages
+          setErrorMessage
         );
         break;
       case "recommend":
@@ -134,7 +125,7 @@ const MenuEdit = () => {
           selectId,
           setRecommend,
           setPrice,
-          setErrorMessages
+          setErrorMessage
         );
         break;
       default:
@@ -204,14 +195,21 @@ const MenuEdit = () => {
     }
   };
 
+  useEffect(() => {
+    if (method !== "") {
+      setErrorMessage({
+        message: "選択してください",
+      });
+    }
+  }, []);
+
   return (
     <>
       <EditOutline
         title="メニュー"
         setState={setMethod}
         select={method}
-        alertText={errorMessages}
-        alertType="menu"
+        alertText={errorMessage ? errorMessage.message : ""}
         id="menu"
       >
         {method !== "" && (

@@ -12,7 +12,6 @@ export {
   recommendCategory,
   recruitCategory,
   noticeCategory,
-  errors,
 } from "./optionData";
 export { sumData } from "./sameDaysCalc";
 export { sort } from "./sort";

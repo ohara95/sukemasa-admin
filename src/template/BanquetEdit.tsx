@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { errorData } from "../recoil_atoms";
 import { db } from "../config/firebese";
 import { Label, Select, Textarea } from "../atoms";
-import SelectButton from "../molecules/SelectButton";
+import { ErrorDetail } from "../types";
 import ToggleButton from "../molecules/ToggleButton";
-import { editBanquetDb, errors } from "../utils";
+import { editBanquetDb } from "../utils";
 import EditOutline from "../organisms/EditOutline";
 
 type Detail = {
@@ -24,7 +22,7 @@ const BanquetEdit = () => {
   const [course, setCourse] = useState("");
   const [price, setPrice] = useState("");
   const [selectId, setSelectId] = useState("");
-  const [errorMessages, setErrorMessages] = useRecoilState(errorData);
+  const [errorMessage, setErrorMessage] = useState<ErrorDetail>();
 
   /** DBデータ取得 */
   useEffect(() => {
@@ -58,10 +56,8 @@ const BanquetEdit = () => {
   const editMenu = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (method !== "add" && selectId === "") {
-      setErrorMessages({
-        isError: true,
-        errorMessage: errors[9],
-        errorName: "course",
+      setErrorMessage({
+        message: "コースを選択してください",
       });
     } else {
       //バリエーション
@@ -74,7 +70,7 @@ const BanquetEdit = () => {
         setCourse,
         setPrice,
         setDetail,
-        setErrorMessages
+        setErrorMessage
       );
     }
   };
@@ -86,8 +82,7 @@ const BanquetEdit = () => {
         id="banquet"
         setState={setMethod}
         select={method}
-        alertText={errorMessages}
-        alertType="course"
+        alertText={errorMessage ? errorMessage.message : ""}
       >
         {method !== "" && (
           <>

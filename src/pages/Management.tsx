@@ -1,8 +1,6 @@
 import React, { FC, useState, useEffect } from "react";
-import { useRecoilState } from "recoil";
 import * as H from "history";
-import { Sales, Buys, ToggleTable, CombineData } from "../types";
-import { errorData } from "../recoil_atoms";
+import { Sales, Buys, ToggleTable, CombineData, ErrorDetail } from "../types";
 import { db, auth } from "../config/firebese";
 import Header from "../components/Header";
 
@@ -20,7 +18,6 @@ import {
   allMonthData,
   chooseGraphData,
   sort,
-  errors,
   sumData,
 } from "../utils";
 
@@ -43,7 +40,7 @@ const Management: FC<Props> = ({ history }) => {
 
   const [dbSales, setDbSales] = useState<Sales[]>([]);
   const [dbBuys, setDbBuys] = useState<Buys[]>([]);
-  const [errorMessages, setErrorMessages] = useRecoilState(errorData);
+  const [errorMessage, setErrorMessage] = useState<ErrorDetail>();
   const setData = [...dbSales, ...dbBuys];
   const salesPriceArr = dbSales.map((data) => {
     return {
@@ -68,21 +65,18 @@ const Management: FC<Props> = ({ history }) => {
   const plusSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!salesDate || !salesPrice) {
-      setErrorMessages({
-        isError: true,
-        errorMessage: errors[1],
-        errorName: "salesInput",
+      setErrorMessage({
+        message: "入力してください",
+        type: "salesInput",
       });
       return;
     } else {
       setSalesPrice("");
       setSalesDate("");
       salesDB(salesDate, salesPrice);
-      setErrorMessages({
-        ...errorMessages,
-        isError: false,
-        errorMessage: "",
-        errorName: "",
+      setErrorMessage({
+        message: "",
+        type: "",
       });
     }
   };
@@ -91,10 +85,9 @@ const Management: FC<Props> = ({ history }) => {
   const minusSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!buysPrice || !buysDate || !buysDetail) {
-      setErrorMessages({
-        isError: true,
-        errorMessage: errors[1],
-        errorName: "buysInput",
+      setErrorMessage({
+        message: "入力してください",
+        type: "buysInput",
       });
       return;
     } else {
@@ -102,11 +95,9 @@ const Management: FC<Props> = ({ history }) => {
       setBuysDate("");
       setBuysDetail("");
       buysDB(buysDate, buysPrice, buysDetail);
-      setErrorMessages({
-        ...errorMessages,
-        isError: false,
-        errorMessage: "",
-        errorName: "",
+      setErrorMessage({
+        message: "",
+        type: "",
       });
     }
   };
@@ -229,9 +220,9 @@ const Management: FC<Props> = ({ history }) => {
       />
 
       <div className="mt-10">
-        {errorMessages?.isError && errorMessages.errorName === "graph" && (
+        {errorMessage?.type === "graph" && (
           <Alert
-            text={errorMessages.errorMessage}
+            text={errorMessage.message}
             icon="fas fa-exclamation-circle"
             stylePlus="flex justify-center"
           />
@@ -279,26 +270,24 @@ const Management: FC<Props> = ({ history }) => {
       <div className="flex w-11/12 mt-20 mx-auto bg-white rounded justify-between">
         <form className="px-8 pt-6 pb-8 mb-4" onSubmit={plusSubmit}>
           <SalesInput
-            {...{
-              setSalesDate,
-              salesPrice,
-              setSalesPrice,
-              salesDate,
-              errorMessages,
-            }}
+            setSalesDate={setSalesDate}
+            salesPrice={salesPrice}
+            setSalesPrice={setSalesPrice}
+            salesDate={salesDate}
+            errorMessages={errorMessage?.message}
+            errorType={errorMessage?.type}
           />
         </form>
         <form className="px-8 pt-6 pb-8 mb-4" onSubmit={minusSubmit}>
           <BuysInput
-            {...{
-              setBuysPrice,
-              buysDetail,
-              setBuysDetail,
-              buysDate,
-              setBuysDate,
-              buysPrice,
-              errorMessages,
-            }}
+            setBuysPrice={setBuysPrice}
+            buysDetail={buysDetail}
+            setBuysDetail={setBuysDetail}
+            buysDate={buysDate}
+            setBuysDate={setBuysDate}
+            buysPrice={buysPrice}
+            errorMessage={errorMessage?.message}
+            errorType={errorMessage?.type}
           />
         </form>
 

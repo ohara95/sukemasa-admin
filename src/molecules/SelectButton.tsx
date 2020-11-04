@@ -8,7 +8,7 @@ type Props = {
   setState: (param: MethodProps) => void;
   select: MethodProps;
   color?: string;
-  alertText?: ErrorDetail;
+  alertText?: string | undefined;
   alertIcon?: "fas fa-exclamation-circle" | "fas fa-question-circle";
   alertType?: string;
 };
@@ -19,7 +19,6 @@ const SelectButton: FC<Props> = ({
   color = "teal",
   alertText,
   alertIcon = "fas fa-exclamation-circle",
-  alertType,
 }) => (
   <div className="md:w-2/3">
     <div
@@ -37,9 +36,7 @@ const SelectButton: FC<Props> = ({
           select={select}
           color={color}
         />
-        {alertText?.isError && alertText.errorName === alertType && (
-          <Alert text={alertText?.errorMessage} icon={alertIcon} />
-        )}
+        {alertText && <Alert text={alertText} icon={alertIcon} />}
       </div>
     </div>
   </div>

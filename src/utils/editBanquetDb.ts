@@ -1,5 +1,4 @@
 import { db } from "../config/firebese";
-import { errors } from "../utils";
 import { ErrorDetail } from "../types";
 
 export const editBanquetDb = (
@@ -16,18 +15,14 @@ export const editBanquetDb = (
   const banquetRef = db.collection("banquetMenu");
   const reset = () => {
     setErrorMessages({
-      isError: false,
-      errorMessage: "",
-      errorName: "",
+      message: "",
     });
   };
   //バリデーション
   if (select === "add") {
     if (!title || !price || !detail) {
       return setErrorMessages({
-        isError: true,
-        errorMessage: errors[8],
-        errorName: "course",
+        message: "入力漏れがあります",
       });
     } else {
       banquetRef
@@ -46,9 +41,7 @@ export const editBanquetDb = (
   } else if (select === "edit") {
     if (!title && !price && !detail) {
       return setErrorMessages({
-        isError: true,
-        errorMessage: errors[1],
-        errorName: "course",
+        message: "入力してください",
       });
     } else {
       banquetRef

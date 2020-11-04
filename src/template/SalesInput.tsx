@@ -7,7 +7,8 @@ type Props = {
   setSalesDate: (param: string) => void;
   salesPrice: string;
   setSalesPrice: (param: string) => void;
-  errorMessages: ErrorDetail;
+  errorMessages: string | undefined;
+  errorType: string | undefined;
 };
 
 const SalesInput: FC<Props> = ({
@@ -16,15 +17,13 @@ const SalesInput: FC<Props> = ({
   setSalesPrice,
   salesDate,
   errorMessages,
+  errorType,
 }) => {
   return (
     <>
       <div>
-        {errorMessages?.isError && errorMessages.errorName === "salesInput" && (
-          <Alert
-            text={errorMessages.errorMessage}
-            icon="fas fa-exclamation-circle"
-          />
+        {errorType === "salesInput" && (
+          <Alert text={errorMessages} icon="fas fa-exclamation-circle" />
         )}
       </div>
 

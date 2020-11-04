@@ -1,8 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { errorData } from "../recoil_atoms";
 import { db } from "../config/firebese";
-import { noticeCategory, errors } from "../utils";
+import { ErrorDetail } from "../types";
+import { noticeCategory } from "../utils";
 import EditStyle from "../organisms/EditStyle";
 
 type selectedProps = "holiday" | "other" | "none";
@@ -17,7 +16,7 @@ const NoticeEdit: FC = () => {
   const [other, setOther] = useState("");
   const [selected, setSelected] = useState<selectedProps>("none");
   const [dbData, setDbData] = useState<Notice>();
-  const [errorMessages, setErrorMessages] = useRecoilState(errorData);
+  const [errorMessage, setErrorMessage] = useState<ErrorDetail>();
 
   const noticeRef = db.collection("notice").doc("f3068OjZY4BqCj3QiLjO");
   useEffect(() => {
@@ -28,19 +27,15 @@ const NoticeEdit: FC = () => {
 
   const addDBNotice = () => {
     if (!noticeObj[selected]) {
-      return setErrorMessages({
-        isError: true,
-        errorMessage: errors[1],
-        errorName: "notice",
+      return setErrorMessage({
+        message: "入力してください",
       });
     } else {
       noticeRef
         .update({ [selected]: noticeObj[selected] })
         .then(() =>
-          setErrorMessages({
-            isError: false,
-            errorMessage: "",
-            errorName: "",
+          setErrorMessage({
+            message: "",
           })
         )
         .catch((err) => {
@@ -65,10 +60,8 @@ const NoticeEdit: FC = () => {
   ) => {
     e.preventDefault();
     if (selected === "none") {
-      return setErrorMessages({
-        isError: true,
-        errorMessage: errors[3],
-        errorName: "notice",
+      return setErrorMessage({
+        message: "選択してください",
       });
     } else {
       setHoliday("");
@@ -91,8 +84,7 @@ const NoticeEdit: FC = () => {
       value={noticeObj[selected]}
       placeholder={dbData?.[selected]}
       onClick={onNoticeSubmit}
-      errorMessages={errorMessages}
-      alertType="notice"
+      errorMessage={errorMessage ? errorMessage.message : ""}
     />
   );
 };

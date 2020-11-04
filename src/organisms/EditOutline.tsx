@@ -7,8 +7,7 @@ type MethodProps = "add" | "edit" | "delete" | "none" | "";
 type Props = {
   setState: (param: MethodProps) => void;
   select: MethodProps;
-  alertText: ErrorDetail;
-  alertType: string;
+  alertText?: string | undefined;
   title: string;
   id?: string;
 };
@@ -18,7 +17,6 @@ const EditOutline: FC<Props> = ({
   setState,
   select,
   alertText,
-  alertType,
   title,
   id,
 }) => (
@@ -32,7 +30,6 @@ const EditOutline: FC<Props> = ({
           setState={setState}
           select={select}
           alertText={alertText}
-          alertType={alertType}
         />
       </div>
       {children}

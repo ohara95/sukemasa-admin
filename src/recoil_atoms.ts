@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { Todo, Error, ErrorDetail } from "./types";
+import { Todo } from "./types";
 
 export const todoData = atom<Todo[]>({
   key: "todoData",
@@ -19,13 +19,4 @@ export const todoEditId = atom({
 export const todoEdit = atom({
   key: "todoEdit",
   default: "",
-});
-
-export const errorData = atom<ErrorDetail>({
-  key: "errorData",
-  default: {
-    isError: false,
-    errorMessage: "",
-    errorName: "",
-  },
 });

@@ -1,5 +1,4 @@
 import { db } from "../config/firebese";
-import { errors } from "../utils";
 import { ErrorDetail } from "../types";
 
 export const editMenuDb = (
@@ -18,15 +17,12 @@ export const editMenuDb = (
     .doc("ya3NEbDICuOTwfUWcHQs")
     .collection(name);
 
-  const reset = () =>
-    setErrorMessage({ isError: false, errorMessage: "", errorName: "" });
+  const reset = () => setErrorMessage({ message: "" });
 
   if (selectMethod === "add") {
     if (!item || !price) {
       return setErrorMessage({
-        isError: true,
-        errorMessage: errors[8],
-        errorName: "menu",
+        message: "入力漏れがあります",
       });
     }
     Ref.add({
@@ -41,9 +37,7 @@ export const editMenuDb = (
   } else if (selectMethod === "edit") {
     if (!item && !price) {
       return setErrorMessage({
-        isError: true,
-        errorMessage: errors[1],
-        errorName: "menu",
+        message: "入力してください",
       });
     } else {
       Ref.doc(id)

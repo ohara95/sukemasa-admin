@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useRecoilState } from "recoil";
-import { errorData } from "../recoil_atoms";
 import { db } from "../config/firebese";
+import { ErrorDetail } from "../types";
 import { Select } from "../atoms";
-import { recruitCategory, errors } from "../utils/optionData";
+import { recruitCategory } from "../utils/optionData";
 import EditStyle from "../organisms/EditStyle";
 
 type Recruit = {
@@ -26,7 +25,7 @@ const RecruitEdit = () => {
   const [time, setTime] = useState("");
   const [welfare, setWelfare] = useState("");
   const [dbData, setDbData] = useState<Recruit>();
-  const [errorMessages, setErrorMessages] = useRecoilState(errorData);
+  const [errorMessage, setErrorMessage] = useState<ErrorDetail>();
 
   const recruitRef = db.collection("recruit").doc("eTLykSLZuPvi6iJ48vNB");
   useEffect(() => {
@@ -37,20 +36,16 @@ const RecruitEdit = () => {
 
   const addDBRecruit = () => {
     if (!recruitObj[selected]) {
-      return setErrorMessages({
-        isError: true,
-        errorMessage: errors[1],
-        errorName: "recruit",
+      return setErrorMessage({
+        message: "入力してください",
       });
     } else {
       db.collection("recruit")
         .doc("eTLykSLZuPvi6iJ48vNB")
         .update({ [selected]: recruitObj[selected] })
         .then(() =>
-          setErrorMessages({
-            isError: false,
-            errorMessage: "",
-            errorName: "",
+          setErrorMessage({
+            message: "",
           })
         )
         .catch((err) => {
@@ -79,10 +74,8 @@ const RecruitEdit = () => {
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (selected === "none") {
-      return setErrorMessages({
-        isError: true,
-        errorMessage: errors[3],
-        errorName: "recruit",
+      return setErrorMessage({
+        message: "選択してください",
       });
     } else {
       addDBRecruit();
@@ -108,8 +101,7 @@ const RecruitEdit = () => {
       value={recruitObj[selected]}
       placeholder={dbData?.[selected]}
       onClick={onSubmit}
-      errorMessages={errorMessages}
-      alertType="recruit"
+      errorMessage={errorMessage?.message ? errorMessage.message : ""}
     />
   );
 };
