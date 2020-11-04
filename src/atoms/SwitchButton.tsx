@@ -16,8 +16,8 @@ const SwitchButton: FC<Props> = ({
   color = "indigo",
 }) => (
   <button
-    className={`shadow hover:bg-${color}-400 text-${color}-800 ${
-      select === value ? `bg-${color}-400` : `bg-${color}-100`
+    className={`shadow hover:bg-${color}-400 text-white ${
+      select === value ? `bg-${color}-400` : `bg-${color}-500`
     } font-bold py-2 px-4 rounded mr-4`}
     value={value}
     type={type}

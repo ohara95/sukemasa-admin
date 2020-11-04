@@ -16,7 +16,7 @@ type Props = {
 const SelectButton: FC<Props> = ({
   setState,
   select,
-  color = "indigo",
+  color = "teal",
   alertText,
   alertIcon = "fas fa-exclamation-circle",
   alertType,

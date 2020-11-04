@@ -17,23 +17,23 @@ const Edit: FC<Props> = ({ history }) => {
         title="HP編集"
         buttonText="戻る"
         render={
-          <div className="flex justify-between ">
-            <li>
+          <div className="flex justify-between w-9/12">
+            <li className="hover:text-black hover:underline">
               <a href="#menu">メニュー</a>
             </li>
-            <li>
+            <li className="hover:text-black hover:underline">
               <a href="#banquet">宴会</a>
             </li>
-            <li>
+            <li className="hover:text-black hover:underline">
               <a href="#recruit">求人</a>
             </li>
-            <li>
+            <li className="hover:text-black hover:underline">
               <a href="#other">その他</a>
             </li>
           </div>
         }
       />
-      <section className="w-full">
+      <div className="mt-10">
         {/* <ImageUpLoader /> */}
         <MenuEdit />
         <hr className="bg-gray-300 my-12" />
@@ -42,7 +42,7 @@ const Edit: FC<Props> = ({ history }) => {
         <RecruitEdit />
         <hr className="bg-gray-300 my-12" />
         <NoticeEdit />
-      </section>
+      </div>
     </>
   );
 };

@@ -76,7 +76,7 @@ const EditStyle: FC<Props> = ({
           <button
             onClick={onClick}
             type="button"
-            className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded "
+            className="bg-teal-500 hover:bg-teal-300 text-white font-bold py-2 px-4 rounded "
           >
             送信
           </button>

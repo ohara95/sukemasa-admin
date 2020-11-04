@@ -16,7 +16,7 @@ const ToggleButton: FC<Props> = ({ select, func }) => (
       </button>
     ) : (
       <button
-        className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
+        className="bg-teal-500 hover:bg-teal-400 text-white font-bold py-2 px-4 rounded"
         onClick={func}
       >
         送信

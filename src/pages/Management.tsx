@@ -221,13 +221,14 @@ const Management: FC<Props> = ({ history }) => {
         buttonText="HP編集"
         render={
           <button
-            className="fas fa-sign-out-alt text-red-500"
+            className="fas fa-sign-out-alt text-red-600"
             onClick={() => auth.signOut()}
           />
         }
+        single
       />
 
-      <div>
+      <div className="mt-10">
         {errorMessages?.isError && errorMessages.errorName === "graph" && (
           <Alert
             text={errorMessages.errorMessage}
