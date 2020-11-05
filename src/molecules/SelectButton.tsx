@@ -1,8 +1,7 @@
 import React, { FC } from "react";
 import { SwitchButton, Alert } from "../atoms";
-import { ErrorDetail } from "../types";
 
-type MethodProps = "add" | "edit" | "delete" | "none" | "";
+type MethodProps = "add" | "edit" | "delete" | "";
 
 type Props = {
   setState: (param: MethodProps) => void;

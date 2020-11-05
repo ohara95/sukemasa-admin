@@ -20,7 +20,7 @@ type SalesDetail = {
   id: string;
 };
 
-type MethodProps = "add" | "edit" | "delete" | "none" | "";
+type MethodProps = "add" | "edit" | "delete" | "";
 type Category = "none" | "cuisine" | "drink" | "recommend";
 
 const MenuEdit = () => {
@@ -58,34 +58,49 @@ const MenuEdit = () => {
     if (method === "add") setSelectId("");
   }, [method]);
 
+  //---セレクタバリデーション---//
+  useEffect(() => {
+    if (!method) {
+      setErrorMessage({
+        message: "選択してください",
+      });
+    } else {
+      if (selectCategory === "none") {
+        setErrorMessage({
+          message: "カテゴリーを選択してください(大分類)",
+        });
+      } else if (
+        selectCuisine === "none" &&
+        selectDrink === "none" &&
+        selectRecommend === "none"
+      ) {
+        setErrorMessage({
+          message: "カテゴリーを選択してください(中分類)",
+        });
+      } else if (method !== "add") {
+        if (!selectId) {
+          setErrorMessage({
+            message: "カテゴリーを選択してください(小分類)",
+          });
+        } else {
+          setErrorMessage({ message: "" });
+        }
+      } else {
+        setErrorMessage({ message: "" });
+      }
+    }
+  }, [
+    method,
+    selectCategory,
+    selectId,
+    selectCuisine,
+    selectDrink,
+    selectRecommend,
+  ]);
+
   /** 値セット&DBに追加関数発火 */
   const onMenuSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    //---セレクタバリデーション---//
-
-    if (selectCategory === "none") {
-      setErrorMessage({
-        message: "カテゴリーを選択してください(大分類)",
-      });
-      return;
-    } else if (
-      selectCuisine === "none" &&
-      selectDrink === "none" &&
-      selectRecommend === "none"
-    ) {
-      setErrorMessage({
-        message: "カテゴリーを選択してください(中分類)",
-      });
-      return;
-    } else if (selectId === "" && method !== "add") {
-      setErrorMessage({
-        message: "カテゴリーを選択してください(小分類)",
-      });
-      return;
-    } else {
-      setErrorMessage({ message: "" });
-    }
-    //----セレクタバリデーション---//
 
     //memo 短くしたい...
     switch (selectCategory) {
@@ -195,14 +210,6 @@ const MenuEdit = () => {
     }
   };
 
-  useEffect(() => {
-    if (method !== "") {
-      setErrorMessage({
-        message: "選択してください",
-      });
-    }
-  }, []);
-
   return (
     <>
       <EditOutline
@@ -212,7 +219,7 @@ const MenuEdit = () => {
         alertText={errorMessage ? errorMessage.message : ""}
         id="menu"
       >
-        {method !== "" && (
+        {method && (
           <>
             <div className="md:flex mb-6">
               <div className="md:w-1/3">

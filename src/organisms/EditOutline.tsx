@@ -1,9 +1,8 @@
 import React, { FC } from "react";
 import { Label } from "../atoms";
 import SelectButton from "../molecules/SelectButton";
-import { ErrorDetail } from "../types";
 
-type MethodProps = "add" | "edit" | "delete" | "none" | "";
+type MethodProps = "add" | "edit" | "delete" | "";
 type Props = {
   setState: (param: MethodProps) => void;
   select: MethodProps;

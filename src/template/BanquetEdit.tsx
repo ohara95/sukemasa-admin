@@ -13,7 +13,7 @@ type Detail = {
   id: string;
 };
 
-type MethodProps = "add" | "edit" | "delete" | "none" | "";
+type MethodProps = "add" | "edit" | "delete" | "";
 
 const BanquetEdit = () => {
   const [dbData, setDbData] = useState<Detail[]>([]);
@@ -53,26 +53,45 @@ const BanquetEdit = () => {
     if (findData) return findData;
   };
 
+  useEffect(() => {
+    if (!method) {
+      setErrorMessage({ message: "選択してください" });
+    } else {
+      if (method !== "add") {
+        if (!selectId) {
+          setErrorMessage({
+            message: "コースを選択してください",
+          });
+        } else {
+          setErrorMessage({ message: "" });
+        }
+      } else {
+        setErrorMessage({ message: "" });
+      }
+    }
+  }, [method, selectId]);
+
   const editMenu = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    if (method !== "add" && selectId === "") {
-      setErrorMessage({
-        message: "コースを選択してください",
-      });
-    } else {
-      //バリエーション
-      editBanquetDb(
-        method,
-        course,
-        price,
-        detail,
-        selectId,
-        setCourse,
-        setPrice,
-        setDetail,
-        setErrorMessage
-      );
-    }
+    // if (method !== "add" && selectId === "") {
+    //   setErrorMessage({
+    //     message: "コースを選択してください",
+    //   });
+    // } else {
+    setErrorMessage({ message: "" });
+    //バリエーション
+    editBanquetDb(
+      method,
+      course,
+      price,
+      detail,
+      selectId,
+      setCourse,
+      setPrice,
+      setDetail,
+      setErrorMessage
+    );
+    // }
   };
 
   return (
@@ -84,7 +103,7 @@ const BanquetEdit = () => {
         select={method}
         alertText={errorMessage ? errorMessage.message : ""}
       >
-        {method !== "" && (
+        {method && (
           <>
             {method !== "add" && (
               <div className="md:flex mb-6">

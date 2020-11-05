@@ -101,7 +101,7 @@ const RecruitEdit = () => {
       value={recruitObj[selected]}
       placeholder={dbData?.[selected]}
       onClick={onSubmit}
-      errorMessage={errorMessage?.message ? errorMessage.message : ""}
+      errorMessage={errorMessage ? errorMessage.message : ""}
     />
   );
 };

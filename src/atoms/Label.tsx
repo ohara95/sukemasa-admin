@@ -10,7 +10,7 @@ const Label: FC<Props> = ({ text, size = "l", color = "gray", stylePlus }) => {
   return (
     <>
       <label
-        className={`block text-${color}-700 text-${size} font-bold mb-2 ${stylePlus}`}
+        className={`block text-${color}-700 text-${size} font-bold ${stylePlus}`}
       >
         {text}
       </label>
