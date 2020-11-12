@@ -12,7 +12,8 @@ export const AuthProvider = ({ children }) => {
     // ユーザーの切替を監視
     auth.onAuthStateChanged((dbUser) => {
       setUser(dbUser);
-      if (dbUser == null) setLoading(false);
+      setLoading(false);
+      console.log(dbUser);
     });
   }, []);
 

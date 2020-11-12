@@ -30,11 +30,11 @@ const Temporary: FC<Props> = ({
             {render}
           </ul>
         </nav>
-        <div className="w-full container mx-auto flex flex-wrap items-center justify-center mt-0 px-6 py-3">
+        <div className="w-full container flex flex-wrap items-center justify-center  px-6 py-3  ">
           <h1 className="font-bold text-white text-xl">{title}</h1>
         </div>
+        <div className={single ? "" : "w-2/6"} />
       </nav>
-      <div className={single ? "" : "w-2/6 "} />
       <hr />
     </>
   );

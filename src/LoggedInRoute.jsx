@@ -1,9 +1,13 @@
 import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { AuthContext } from "./AuthService";
+import Spinner from "./pages/Spinner";
 
 const LoggedInRoute = ({ component: Component, ...other }) => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
+  if (loading) {
+    return <Spinner />;
+  }
   return (
     <Route
       {...other}
