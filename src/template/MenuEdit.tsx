@@ -99,6 +99,7 @@ const MenuEdit = () => {
   ]);
 
   /** 値セット&DBに追加関数発火 */
+  //3個くらいしか違うのない
   const onMenuSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
 

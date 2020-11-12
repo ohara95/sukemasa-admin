@@ -38,6 +38,8 @@ const SignIn: FC<Props> = ({ history }) => {
 
   if (user) {
     return <Redirect to="/" />;
+  } else {
+    setLoading(false);
   }
 
   return (
