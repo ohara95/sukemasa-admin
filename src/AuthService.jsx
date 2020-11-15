@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
     auth.onAuthStateChanged((dbUser) => {
       setUser(dbUser);
       setLoading(false);
-      console.log(dbUser);
     });
   }, []);
 

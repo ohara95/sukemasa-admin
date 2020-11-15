@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../config/firebese";
-import { Label, Select } from "../atoms";
 import { ErrorDetail } from "../types";
 import EditOutline from "../organisms/EditOutline";
 import {
@@ -10,8 +9,9 @@ import {
   drinkCategory,
   recommendCategory,
 } from "../utils";
-import MiddleCategory from "../components/MiddleCategory";
 import ToggleButton from "../molecules/ToggleButton";
+import CategoryOutline from "../organisms/CategoryOutline";
+import InputOutline from "../organisms/InputOutline";
 
 type SalesDetail = {
   price: number;
@@ -22,6 +22,7 @@ type SalesDetail = {
 
 type MethodProps = "add" | "edit" | "delete" | "";
 type Category = "none" | "cuisine" | "drink" | "recommend";
+type OptionData = { value: string; name: string }[];
 
 const MenuEdit = () => {
   const [cuisine, setCuisine] = useState("");
@@ -99,53 +100,34 @@ const MenuEdit = () => {
   ]);
 
   /** 値セット&DBに追加関数発火 */
-  //3個くらいしか違うのない
   const onMenuSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-
-    //memo 短くしたい...
+    const callMenuDbType = (
+      item: string,
+      selectMethod: string,
+      setter: (param: string) => void
+    ) => {
+      editMenuDb(
+        item,
+        price,
+        method,
+        selectMethod,
+        selectCategory,
+        selectId,
+        setter,
+        setPrice,
+        setErrorMessage
+      );
+    };
     switch (selectCategory) {
       case "cuisine":
-        editMenuDb(
-          cuisine,
-          price,
-          method,
-          selectCuisine,
-          selectCategory,
-          selectId,
-          setCuisine,
-          setPrice,
-          setErrorMessage
-        );
-        break;
+        return callMenuDbType(cuisine, selectCuisine, setCuisine);
       case "drink":
-        editMenuDb(
-          drink,
-          price,
-          method,
-          selectDrink,
-          selectCategory,
-          selectId,
-          setDrink,
-          setPrice,
-          setErrorMessage
-        );
-        break;
+        return callMenuDbType(drink, selectDrink, setDrink);
       case "recommend":
-        editMenuDb(
-          recommend,
-          price,
-          method,
-          selectRecommend,
-          selectCategory,
-          selectId,
-          setRecommend,
-          setPrice,
-          setErrorMessage
-        );
-        break;
+        return callMenuDbType(recommend, selectRecommend, setRecommend);
       default:
-        break;
+        return;
     }
   };
 
@@ -162,52 +144,51 @@ const MenuEdit = () => {
     }
   };
 
-  // 大分類に応じて中分類セレクトを出す
-  const selected = () => {
+  /** 中分類表示 */
+  const selected = (selectCategory: Category) => {
+    const selectType = (setter: (param: string) => void, data: OptionData) => {
+      return (
+        <CategoryOutline
+          text="メニューカテゴリ(中分類)"
+          onChange={(e) => {
+            setter(e.target.value);
+          }}
+          optionData={data}
+        />
+      );
+    };
     if (selectCategory === "cuisine") {
-      return (
-        <MiddleCategory
-          setState={setSelectCuisine}
-          optionData={cuisineCategory}
-        />
-      );
+      return selectType(setSelectCuisine, cuisineCategory);
     } else if (selectCategory === "drink") {
-      return (
-        <MiddleCategory setState={setSelectDrink} optionData={drinkCategory} />
-      );
+      return selectType(setSelectDrink, drinkCategory);
     } else if (selectCategory === "recommend") {
-      return (
-        <MiddleCategory
-          setState={setSelectRecommend}
-          optionData={recommendCategory}
-        />
-      );
+      return selectType(setSelectRecommend, recommendCategory);
     }
   };
 
-  /** 変更か削除だったらメニュー名と金額をみれるようにする */
-  const editOption = () => {
-    let item = "";
-    switch (selectCategory) {
+  /** 小分類表示 */
+  const editOption = (type: Category) => {
+    const selectOption = (option: string) => {
+      if (dbData) {
+        const category = dbData.filter((el) => el.category === option);
+        return (
+          <CategoryOutline
+            text="メニューカテゴリ(小分類)"
+            onChange={(e) => setSelectId(e.target.value)}
+            dbData={category}
+          />
+        );
+      }
+    };
+    switch (type) {
       case "cuisine":
-        item = selectCuisine;
-        break;
+        return selectOption(selectCuisine);
       case "drink":
-        item = selectDrink;
-        break;
+        return selectOption(selectDrink);
       case "recommend":
-        item = selectRecommend;
-        break;
+        return selectOption(selectRecommend);
       default:
-    }
-
-    if (dbData) {
-      const category = dbData.filter((el) => el.category === item);
-      return category.map((el) => (
-        <option key={el.id} value={el.id}>
-          {el.item} ¥{el.price}
-        </option>
-      ));
+        return;
     }
   };
 
@@ -222,90 +203,46 @@ const MenuEdit = () => {
       >
         {method && (
           <>
-            <div className="md:flex mb-6">
-              <div className="md:w-1/3">
-                <Label text="メニューカテゴリ(大分類)" />
-              </div>
-              <div className="md:w-2/3 border-gray-400 border-2 rounded">
-                <Select
-                  onChange={(e) => {
-                    setSelectCategory(e.target.value as Category);
-                  }}
-                >
-                  {category.map((category) => (
-                    <option key={category.value} value={category.value}>
-                      {category.name}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-            </div>
+            <CategoryOutline
+              text="メニューカテゴリ(大分類)"
+              onChange={(e) => {
+                setSelectCategory(e.target.value as Category);
+              }}
+              optionData={category}
+            />
 
-            {selectCategory !== "none" && (
-              <div className="md:flex mb-6">
-                <div className="md:w-1/3">
-                  <Label text="メニューカテゴリ(中分類)" />
-                </div>
-                <div className="md:w-2/3 border-gray-400 border-2 rounded">
-                  {selected()}
-                </div>
-              </div>
-            )}
+            {selectCategory !== "none" && selected(selectCategory)}
 
             {(selectDrink !== "none" ||
               selectCuisine !== "none" ||
               selectRecommend !== "none") &&
-              method !== "add" && (
-                <div className="md:flex mb-6">
-                  <div className="md:w-1/3">
-                    <Label text="メニューカテゴリ(小分類)" />
-                  </div>
-                  <div className="md:w-2/3 border-gray-400 border-2 rounded">
-                    <Select onChange={(e) => setSelectId(e.target.value)}>
-                      <option value="none">選択してください</option>
-                      {editOption()}
-                    </Select>
-                  </div>
-                </div>
-              )}
+              method !== "add" &&
+              editOption(selectCategory)}
 
             {method !== "delete" && (
               <>
-                <div className="md:flex mb-6">
-                  <div className="md:w-1/3">
-                    <Label text="メニュー名" />
-                  </div>
-                  <div className="md:w-2/3">
-                    <input
-                      className="w-full border-gray-400 border-2 rounded py-3 px-3"
-                      value={methodObj[selectCategory]}
-                      onChange={(e) => {
-                        controlChange(e.target.value);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="md:flex mb-6">
-                  <div className="md:w-1/3">
-                    <Label text="金額" />
-                  </div>
-                  <div className="md:w-2/3">
-                    <input
-                      className="w-full border-gray-400 border-2 rounded py-3 px-3"
-                      value={price}
-                      onChange={(e) => {
-                        setPrice(e.target.value);
-                      }}
-                      type="number"
-                    />
-                  </div>
-                </div>
+                <InputOutline
+                  text="メニュー名"
+                  value={methodObj[selectCategory]}
+                  onChange={(e) => {
+                    controlChange(e.target.value);
+                  }}
+                  type="text"
+                />
+                <InputOutline
+                  text="金額"
+                  value={price}
+                  onChange={(e) => {
+                    setPrice(e.target.value);
+                  }}
+                  type="number"
+                />
               </>
             )}
 
             <div className="md:flex md:items-center">
               <div className="md:w-1/3 " />
-              <ToggleButton select={method} func={onMenuSubmit} />
+              <ToggleButton select={method} onClick={onMenuSubmit} />
             </div>
           </>
         )}

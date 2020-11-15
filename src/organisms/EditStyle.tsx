@@ -1,5 +1,6 @@
 import React, { FC } from "react";
-import { Label, Select, Textarea, Alert } from "../atoms";
+import { Label, Textarea, Alert } from "../atoms";
+import MiddleCategory from "../molecules/MiddleCategory";
 
 type Props = {
   onChangeSelect: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -42,13 +43,10 @@ const EditStyle: FC<Props> = ({
           <Label text="投稿内容" />
         </div>
         <div className="md:w-2/3 border-gray-400 border-2 rounded">
-          <Select onChange={onChangeSelect}>
-            {selectCategory.map((category) => (
-              <option key={category.value} value={category.value}>
-                {category.name}
-              </option>
-            ))}
-          </Select>
+          <MiddleCategory
+            onChange={onChangeSelect}
+            optionData={selectCategory}
+          />
         </div>
       </div>
 
@@ -66,7 +64,7 @@ const EditStyle: FC<Props> = ({
       </div>
 
       <div className="md:flex md:items-center">
-        <div className="md:w-1/3"></div>
+        <div className="md:w-1/3" />
         <div className="md:w-2/3 flex justify-end">
           <button
             onClick={onClick}

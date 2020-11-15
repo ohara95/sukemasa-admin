@@ -174,7 +174,7 @@ const BanquetEdit = () => {
             )}
             <div className="md:flex md:items-center">
               <div className="md:w-1/3" />
-              <ToggleButton select={method} func={editMenu} />
+              <ToggleButton select={method} onClick={editMenu} />
             </div>
           </>
         )}

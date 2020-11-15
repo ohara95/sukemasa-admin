@@ -1,10 +1,8 @@
-import React, { FC, useState, useEffect, useContext } from "react";
+import React, { FC, useState, useEffect } from "react";
 import * as H from "history";
 import { Sales, Buys, ToggleTable, CombineData, ErrorDetail } from "../types";
 import { db, auth } from "../config/firebese";
 import Header from "../components/Header";
-import Spinner from "./Spinner";
-import { AuthContext } from "../AuthService";
 
 import BuysTodo from "../components/buysTodo";
 import ManagementGraph from "../components/ManagementGraph";
@@ -62,7 +60,6 @@ const Management: FC<Props> = ({ history }) => {
 
   const sumSalesPrice = dbSumCalc(toggleTable, salesPriceArr, choiceMonth);
   const sumBuysPrice = dbSumCalc(toggleTable, buysPriceArr, choiceMonth);
-  const { loading, setLoading } = useContext(AuthContext);
 
   /** 売上計上 */
   const plusSubmit = (e: React.FormEvent<HTMLFormElement>) => {
