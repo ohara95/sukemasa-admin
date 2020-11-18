@@ -6,9 +6,11 @@ type Props = {
   optionData?: { value: string; name: string }[];
   dbData?: {
     price: number;
-    category: string;
-    item: string;
-    id: string;
+    category?: string;
+    item?: string;
+    id?: string;
+    title?: string;
+    detail?: string;
   }[];
 };
 
