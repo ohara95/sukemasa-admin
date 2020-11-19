@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../config/firebese";
 import { Label, Textarea } from "../atoms";
 import { ErrorDetail } from "../types";
 import ToggleButton from "../molecules/ToggleButton";
@@ -26,8 +25,8 @@ const BanquetEdit = () => {
   const [selectId, setSelectId] = useState("");
   const [errorMessage, setErrorMessage] = useState<ErrorDetail>();
 
-  const displayPlaceholder = () => {
-    const findData = dbData.find((select) => select.id === selectId)?.detail;
+  const displayPlaceholder = (data: Detail[]) => {
+    const findData = data.find((select) => select.id === selectId)?.detail;
     if (findData) return findData;
   };
 
@@ -129,7 +128,9 @@ const BanquetEdit = () => {
                         onChange={(e) => {
                           setDetail(e.target.value);
                         }}
-                        placeholder={displayPlaceholder()}
+                        placeholder={
+                          method === "edit" ? displayPlaceholder(dbData) : ""
+                        }
                       />
                     </div>
                   </div>

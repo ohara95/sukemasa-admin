@@ -14,25 +14,27 @@ type Props = {
   }[];
 };
 
-const MiddleCategory: FC<Props> = ({ onChange, optionData, dbData }) => (
-  <Select onChange={onChange}>
-    {optionData &&
-      optionData?.map((category) => (
-        <option key={category.value} value={category.value}>
-          {category.name}
-        </option>
-      ))}
-    {dbData && (
-      <>
-        <option value="none">選択してください</option>
-        {dbData?.map((el) => (
-          <option key={el.id} value={el.id}>
-            {el.item} ¥{el.price}
+const MiddleCategory: FC<Props> = ({ onChange, optionData, dbData }) => {
+  return (
+    <Select onChange={onChange}>
+      {optionData &&
+        optionData?.map((category) => (
+          <option key={category.value} value={category.value}>
+            {category.name}
           </option>
         ))}
-      </>
-    )}
-  </Select>
-);
+      {dbData && (
+        <>
+          <option value="none">選択してください</option>
+          {dbData?.map((el) => (
+            <option key={el.id} value={el.id}>
+              {el.item} ¥{el.price}
+            </option>
+          ))}
+        </>
+      )}
+    </Select>
+  );
+};
 
 export default MiddleCategory;

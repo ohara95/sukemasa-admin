@@ -1,5 +1,6 @@
 import React, { FC } from "react";
-import { Button, Input, Label, Alert } from "../atoms";
+import { Button, Alert } from "../atoms";
+import InputWithLabel from "../molecules/InputWithLabel";
 
 type Props = {
   buysPrice: string;
@@ -12,6 +13,13 @@ type Props = {
   errorType: string | undefined;
 };
 
+type InputDetail = {
+  title: string;
+  type: "text" | "number" | "date";
+  value: string;
+  onChange: (e: React.ChangeEvent<EventTarget & HTMLInputElement>) => void;
+};
+
 const BuysInput: FC<Props> = ({
   setBuysPrice,
   buysDetail,
@@ -22,6 +30,30 @@ const BuysInput: FC<Props> = ({
   errorMessage,
   errorType,
 }) => {
+  const inputDetail: InputDetail[] = [
+    {
+      title: "出費日",
+      type: "date",
+      value: buysDate,
+      onChange: (e: React.ChangeEvent<EventTarget & HTMLInputElement>) =>
+        setBuysDate(e.target.value),
+    },
+    {
+      title: "出費額",
+      type: "number",
+      value: buysPrice,
+      onChange: (e: React.ChangeEvent<EventTarget & HTMLInputElement>) =>
+        setBuysPrice(e.target.value),
+    },
+    {
+      title: "出費明細",
+      type: "text",
+      value: buysDetail,
+      onChange: (e: React.ChangeEvent<EventTarget & HTMLInputElement>) =>
+        setBuysDetail(e.target.value),
+    },
+  ];
+
   return (
     <>
       <div>
@@ -29,30 +61,9 @@ const BuysInput: FC<Props> = ({
           <Alert text={errorMessage} icon="fas fa-exclamation-circle" />
         )}
       </div>
-      <div className="mb-4">
-        <Label text="出費日" />
-        <Input
-          type="date"
-          value={buysDate}
-          onChange={(e) => setBuysDate(e.target.value)}
-        />
-      </div>
-      <div className="mb-4">
-        <Label text="出費額" />
-        <Input
-          type="number"
-          value={buysPrice}
-          onChange={(e) => setBuysPrice(e.target.value)}
-        />
-      </div>
-      <div className="mb-4">
-        <Label text="出費明細" />
-        <Input
-          type="text"
-          value={buysDetail}
-          onChange={(e) => setBuysDetail(e.target.value)}
-        />
-      </div>
+      {inputDetail.map((input) => {
+        return <InputWithLabel {...input} />;
+      })}
       <div className="flex justify-end">
         <Button text="計上" />
       </div>

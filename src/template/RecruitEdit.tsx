@@ -8,23 +8,29 @@ import EditStyle from "../organisms/EditStyle";
 type Recruit = {
   work: string;
   wont: string;
-  terms: string;
+  conditions: string;
   time: string;
   welfare: string;
   [param: string]: string;
 };
 
-type Select = "work" | "wont" | "terms" | "time" | "welfare" | "none";
+type Select = "work" | "wont" | "conditions" | "time" | "welfare" | "none";
 
 const RecruitEdit = () => {
   const [selected, setSelected] = useState<Select>("none");
 
   const [work, setWork] = useState("");
   const [wont, setWont] = useState("");
-  const [terms, setTerms] = useState("");
+  const [conditions, setConditions] = useState("");
   const [time, setTime] = useState("");
   const [welfare, setWelfare] = useState("");
-  const [dbData, setDbData] = useState<Recruit>();
+  const [dbData, setDbData] = useState<Recruit>({
+    conditions: "",
+    time: "",
+    welfare: "",
+    wont: "",
+    work: "",
+  });
   const [errorMessage, setErrorMessage] = useState<ErrorDetail>();
 
   const recruitRef = db.collection("recruit").doc("eTLykSLZuPvi6iJ48vNB");
@@ -32,7 +38,7 @@ const RecruitEdit = () => {
     recruitRef.onSnapshot((snap) => setDbData(snap.data() as Recruit));
   }, []);
 
-  const recruitObj = { none: "", work, wont, terms, time, welfare };
+  const recruitObj = { none: "", work, wont, conditions, time, welfare };
 
   const addDBRecruit = () => {
     if (!recruitObj[selected]) {
@@ -40,8 +46,7 @@ const RecruitEdit = () => {
         message: "入力してください",
       });
     } else {
-      db.collection("recruit")
-        .doc("eTLykSLZuPvi6iJ48vNB")
+      recruitRef
         .update({ [selected]: recruitObj[selected] })
         .then(() =>
           setErrorMessage({
@@ -60,8 +65,8 @@ const RecruitEdit = () => {
         return setWork(value);
       case "wont":
         return setWont(value);
-      case "terms":
-        return setTerms(value);
+      case "conditions":
+        return setConditions(value);
       case "time":
         return setTime(value);
       case "welfare":
@@ -81,7 +86,7 @@ const RecruitEdit = () => {
       addDBRecruit();
       setWork("");
       setWont("");
-      setTerms("");
+      setConditions("");
       setTime("");
       setWelfare("");
     }

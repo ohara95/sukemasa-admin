@@ -11,6 +11,7 @@ import {
 import ToggleButton from "../molecules/ToggleButton";
 import CategoryOutline from "../organisms/CategoryOutline";
 import InputOutline from "../organisms/InputOutline";
+import { db } from "../config/firebese";
 import { useFirebaseSub } from "../hooks/useFirebaseSub";
 
 type SalesDetail = {
@@ -37,17 +38,32 @@ const MenuEdit = () => {
   const [selectCategory, setSelectCategory] = useState<Category>("none");
   const [selectId, setSelectId] = useState("");
   const [errorMessage, setErrorMessage] = useState<ErrorDetail>();
-  const dbData = useFirebaseSub<SalesDetail>(
-    "menu",
-    "ya3NEbDICuOTwfUWcHQs",
-    selectCategory
-  );
+  // const dbData = useFirebaseSub<SalesDetail>(
+  //   "menu",
+  //   "ya3NEbDICuOTwfUWcHQs",
+  //   selectCategory,
+  //   selectCategory
+  // );
 
+  const [dbData, setDbData] = useState<SalesDetail[]>([]);
+  const menuRef = db.collection("menu").doc("ya3NEbDICuOTwfUWcHQs");
   const methodObj = { none: "", cuisine, drink, recommend };
 
   useEffect(() => {
     if (method === "add") setSelectId("");
   }, [method]);
+
+  useEffect(() => {
+    menuRef.collection(selectCategory).onSnapshot((snap) => {
+      const menu = snap.docs.map((doc) => {
+        return {
+          ...(doc.data() as SalesDetail),
+          id: doc.id,
+        };
+      });
+      setDbData(menu);
+    });
+  }, [selectCategory]);
 
   //---セレクタバリデーション---//
   useEffect(() => {
@@ -73,8 +89,6 @@ const MenuEdit = () => {
           setErrorMessage({
             message: "カテゴリーを選択してください(小分類)",
           });
-        } else {
-          setErrorMessage({ message: "" });
         }
       } else {
         setErrorMessage({ message: "" });
@@ -161,6 +175,7 @@ const MenuEdit = () => {
     const selectOption = (option: string) => {
       if (dbData) {
         const category = dbData.filter((el) => el.category === option);
+
         return (
           <CategoryOutline
             text="メニューカテゴリ(小分類)"
