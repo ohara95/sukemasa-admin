@@ -47,7 +47,7 @@ const BuysTodoItem: FC<Props> = ({ content, id, isDone }) => {
         type="checkbox"
         checked={isDone}
         onClick={(e) => checkedItem((e.target as HTMLInputElement).value)}
-        className="form-checkbox py-10"
+        className="form-checkbox"
       />
       {isEdit && editId === id ? (
         <button

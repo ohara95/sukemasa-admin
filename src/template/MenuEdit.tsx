@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../config/firebese";
 import { ErrorDetail } from "../types";
 import EditOutline from "../organisms/EditOutline";
 import {
@@ -12,6 +11,8 @@ import {
 import ToggleButton from "../molecules/ToggleButton";
 import CategoryOutline from "../organisms/CategoryOutline";
 import InputOutline from "../organisms/InputOutline";
+import { db } from "../config/firebese";
+import { useFirebaseSub } from "../hooks/useFirebaseSub";
 
 type SalesDetail = {
   price: number;
@@ -31,18 +32,27 @@ const MenuEdit = () => {
   const [price, setPrice] = useState("");
   const [method, setMethod] = useState<MethodProps>("");
 
-  const [dbData, setDbData] = useState<SalesDetail[]>([]);
   const [selectCuisine, setSelectCuisine] = useState("none");
   const [selectDrink, setSelectDrink] = useState("none");
   const [selectRecommend, setSelectRecommend] = useState("none");
   const [selectCategory, setSelectCategory] = useState<Category>("none");
   const [selectId, setSelectId] = useState("");
   const [errorMessage, setErrorMessage] = useState<ErrorDetail>();
+  // const dbData = useFirebaseSub<SalesDetail>(
+  //   "menu",
+  //   "ya3NEbDICuOTwfUWcHQs",
+  //   selectCategory,
+  //   selectCategory
+  // );
 
+  const [dbData, setDbData] = useState<SalesDetail[]>([]);
   const menuRef = db.collection("menu").doc("ya3NEbDICuOTwfUWcHQs");
   const methodObj = { none: "", cuisine, drink, recommend };
 
-  /** DBからデータ取得*/
+  useEffect(() => {
+    if (method === "add") setSelectId("");
+  }, [method]);
+
   useEffect(() => {
     menuRef.collection(selectCategory).onSnapshot((snap) => {
       const menu = snap.docs.map((doc) => {
@@ -54,10 +64,6 @@ const MenuEdit = () => {
       setDbData(menu);
     });
   }, [selectCategory]);
-
-  useEffect(() => {
-    if (method === "add") setSelectId("");
-  }, [method]);
 
   //---セレクタバリデーション---//
   useEffect(() => {
@@ -166,6 +172,7 @@ const MenuEdit = () => {
     const selectOption = (option: string) => {
       if (dbData) {
         const category = dbData.filter((el) => el.category === option);
+
         return (
           <CategoryOutline
             text="メニューカテゴリ(小分類)"
