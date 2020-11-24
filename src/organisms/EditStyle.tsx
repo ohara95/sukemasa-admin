@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { Label, Textarea, Alert } from "../atoms";
-import MiddleCategory from "../molecules/MiddleCategory";
+import CategoryOutline from "../organisms/CategoryOutline";
 
 type Props = {
   onChangeSelect: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -37,18 +37,11 @@ const EditStyle: FC<Props> = ({
           {errorMessage && <Alert text={errorMessage} icon={alertIcon} />}
         </div>
       </div>
-
-      <div className="md:flex mb-6">
-        <div className="md:w-1/3">
-          <Label text="投稿内容" />
-        </div>
-        <div className="md:w-2/3 border-gray-400 border-2 rounded">
-          <MiddleCategory
-            onChange={onChangeSelect}
-            optionData={selectCategory}
-          />
-        </div>
-      </div>
+      <CategoryOutline
+        text="投稿内容"
+        onChange={onChangeSelect}
+        optionData={selectCategory}
+      />
 
       <div className="md:flex mb-6">
         <div className="md:w-1/3">

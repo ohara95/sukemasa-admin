@@ -9,7 +9,6 @@ type Props = {
   color?: string;
   alertText?: string | undefined;
   alertIcon?: "fas fa-exclamation-circle" | "fas fa-question-circle";
-  alertType?: string;
 };
 
 const SelectButton: FC<Props> = ({

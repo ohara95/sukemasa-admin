@@ -20,6 +20,7 @@ import {
   sort,
   sumData,
 } from "../utils";
+import { useFirebaseOrderBy } from "../hooks/useFirebaseOrderBy";
 
 type Props = {
   history: H.History;
