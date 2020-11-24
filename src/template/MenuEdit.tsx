@@ -67,33 +67,30 @@ const MenuEdit = () => {
 
   //---セレクタバリデーション---//
   useEffect(() => {
-    if (!method) {
-      setErrorMessage({
-        message: "選択してください",
-      });
-    } else {
-      if (selectCategory === "none") {
-        setErrorMessage({
-          message: "カテゴリーを選択してください(大分類)",
-        });
-      } else if (
-        selectCuisine === "none" &&
-        selectDrink === "none" &&
-        selectRecommend === "none"
-      ) {
-        setErrorMessage({
-          message: "カテゴリーを選択してください(中分類)",
-        });
-      } else if (method !== "add") {
-        if (!selectId) {
-          setErrorMessage({
-            message: "カテゴリーを選択してください(小分類)",
-          });
-        }
+    const validation = () => {
+      if (!method) {
+        return "選択してください";
       } else {
-        setErrorMessage({ message: "" });
+        if (selectCategory === "none") {
+          return "カテゴリーを選択してください(大分類)";
+        } else if (
+          selectCuisine === "none" &&
+          selectDrink === "none" &&
+          selectRecommend === "none"
+        ) {
+          return "カテゴリーを選択してください(中分類)";
+        } else if (method !== "add") {
+          if (!selectId) {
+            return "カテゴリーを選択してください(小分類)";
+          } else {
+            return "";
+          }
+        } else {
+          return "";
+        }
       }
-    }
+    };
+    setErrorMessage({ message: validation() });
   }, [
     method,
     selectCategory,
@@ -198,61 +195,59 @@ const MenuEdit = () => {
   };
 
   return (
-    <>
-      <EditOutline
-        title="メニュー"
-        setState={setMethod}
-        select={method}
-        alertText={errorMessage ? errorMessage.message : ""}
-        id="menu"
-      >
-        {method && (
-          <>
-            <CategoryOutline
-              text="メニューカテゴリ(大分類)"
-              onChange={(e) => {
-                setSelectCategory(e.target.value as Category);
-              }}
-              optionData={category}
-            />
+    <EditOutline
+      title="メニュー"
+      setState={setMethod}
+      select={method}
+      alertText={errorMessage ? errorMessage.message : ""}
+      id="menu"
+    >
+      {method && (
+        <>
+          <CategoryOutline
+            text="メニューカテゴリ(大分類)"
+            onChange={(e) => {
+              setSelectCategory(e.target.value as Category);
+            }}
+            optionData={category}
+          />
 
-            {selectCategory !== "none" && selected(selectCategory)}
+          {selectCategory !== "none" && selected(selectCategory)}
 
-            {(selectDrink !== "none" ||
-              selectCuisine !== "none" ||
-              selectRecommend !== "none") &&
-              method !== "add" &&
-              editOption(selectCategory)}
+          {(selectDrink !== "none" ||
+            selectCuisine !== "none" ||
+            selectRecommend !== "none") &&
+            method !== "add" &&
+            editOption(selectCategory)}
 
-            {method !== "delete" && (
-              <>
-                <InputOutline
-                  text="メニュー名"
-                  value={methodObj[selectCategory]}
-                  onChange={(e) => {
-                    controlChange(e.target.value);
-                  }}
-                  type="text"
-                />
-                <InputOutline
-                  text="金額"
-                  value={price}
-                  onChange={(e) => {
-                    setPrice(e.target.value);
-                  }}
-                  type="number"
-                />
-              </>
-            )}
+          {method !== "delete" && (
+            <>
+              <InputOutline
+                text="メニュー名"
+                value={methodObj[selectCategory]}
+                onChange={(e) => {
+                  controlChange(e.target.value);
+                }}
+                type="text"
+              />
+              <InputOutline
+                text="金額"
+                value={price}
+                onChange={(e) => {
+                  setPrice(e.target.value);
+                }}
+                type="number"
+              />
+            </>
+          )}
 
-            <div className="md:flex md:items-center">
-              <div className="md:w-1/3 " />
-              <ToggleButton select={method} onClick={onMenuSubmit} />
-            </div>
-          </>
-        )}
-      </EditOutline>
-    </>
+          <div className="md:flex md:items-center">
+            <div className="md:w-1/3 " />
+            <ToggleButton select={method} onClick={onMenuSubmit} />
+          </div>
+        </>
+      )}
+    </EditOutline>
   );
 };
 
